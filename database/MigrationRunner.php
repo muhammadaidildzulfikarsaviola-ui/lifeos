@@ -10,20 +10,25 @@ final class MigrationRunner
 {
     private string $directory;
     private string $lockName='lifeos_migration_runner';
+
     public function __construct(private readonly PDO $pdo,?string $directory=null){$this->directory=$directory??BASE_PATH.'/database/migrations';}
 
-    public function migrate(bool $retryFailed=false): array {
+    public function migrate(?string $retryOnly=null): array {
         $this->lock();
         try {
             $this->ensureTable();
-            $records=$this->records();$results=[];
+            $records=$this->records();
+            if($retryOnly!==null&&(!isset($records[$retryOnly])||$records[$retryOnly]['status']!=='failed'))throw new RuntimeException('Migration tidak ditemukan atau bukan berstatus failed: '.$retryOnly);
+            $results=[];
             foreach($this->files() as $name=>$path){
+                if($retryOnly!==null&&$name!==$retryOnly)continue;
                 $checksum=hash_file('sha256',$path);$record=$records[$name]??null;
                 if($record&&$record['status']==='applied'){
                     if(!hash_equals($record['checksum'],$checksum))throw new RuntimeException('Checksum migration berubah: '.$name);
                     continue;
                 }
-                if($record&&$record['status']==='failed'&&!$retryFailed)throw new RuntimeException('Migration gagal sebelumnya: '.$name.'. Periksa kondisi database lalu jalankan migrate:retry '.$name);
+                if($record&&$record['status']==='failed'&&$retryOnly===null)throw new RuntimeException('Migration gagal sebelumnya: '.$name.'. Periksa kondisi database lalu jalankan migrate:retry '.$name);
+                if($record&&$record['status']==='running'&&$retryOnly===null)throw new RuntimeException('Migration terhenti saat running: '.$name.'. Periksa kondisi database lalu gunakan retry setelah aman.');
                 $migration=require $path;
                 if(!is_array($migration)||!isset($migration['up'])||!is_callable($migration['up']))throw new RuntimeException('Format migration tidak valid: '.$name);
                 $this->markRunning($name,$checksum);
@@ -34,11 +39,7 @@ final class MigrationRunner
         } finally {$this->unlock();}
     }
 
-    public function retry(string $name): array {
-        $this->ensureTable();$records=$this->records();
-        if(!isset($records[$name])||$records[$name]['status']!=='failed')throw new RuntimeException('Migration tidak ditemukan atau bukan berstatus failed: '.$name);
-        return $this->migrate(true);
-    }
+    public function retry(string $name): array { return $this->migrate($name); }
 
     public function status(): array {
         $this->ensureTable();$records=$this->records();$rows=[];
@@ -59,21 +60,26 @@ final class MigrationRunner
             UNIQUE KEY uq_schema_migrations_name(migration)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     }
+
     private function files(): array {
         if(!is_dir($this->directory))throw new RuntimeException('Folder migration tidak ditemukan: '.$this->directory);
         $paths=glob($this->directory.'/*.php')?:[];sort($paths,SORT_STRING);$files=[];
         foreach($paths as $path){$name=basename($path,'.php');if(!preg_match('/^[0-9]{4,}_[a-z0-9_]+$/',$name))throw new RuntimeException('Nama migration harus NNNN_nama_file: '.$name);$files[$name]=$path;}
         return $files;
     }
+
     private function records(): array {
         $rows=$this->pdo->query('SELECT * FROM schema_migrations')->fetchAll(PDO::FETCH_ASSOC);$out=[];
-        foreach($rows as $row)$out[$row['migration']]=$row;return $out;
+        foreach($rows as $row)$out[$row['migration']]=$row;
+        return $out;
     }
+
     private function markRunning(string $name,string $checksum): void {
         $q=$this->pdo->prepare('SELECT id FROM schema_migrations WHERE migration=:name');$q->execute(['name'=>$name]);$id=$q->fetchColumn();
         if($id){$q=$this->pdo->prepare("UPDATE schema_migrations SET checksum=:sum,status='running',error_message=NULL,started_at=UTC_TIMESTAMP(),applied_at=NULL WHERE id=:id");$q->execute(['sum'=>$checksum,'id'=>$id]);}
         else{$q=$this->pdo->prepare("INSERT INTO schema_migrations(migration,checksum,status,started_at) VALUES(:name,:sum,'running',UTC_TIMESTAMP())");$q->execute(['name'=>$name,'sum'=>$checksum]);}
     }
+
     private function markApplied(string $name): void {$q=$this->pdo->prepare("UPDATE schema_migrations SET status='applied',error_message=NULL,applied_at=UTC_TIMESTAMP() WHERE migration=:name");$q->execute(['name'=>$name]);}
     private function markFailed(string $name,string $error): void {$q=$this->pdo->prepare("UPDATE schema_migrations SET status='failed',error_message=:error WHERE migration=:name");$q->execute(['error'=>mb_substr($error,0,60000),'name'=>$name]);}
     private function lock(): void {$q=$this->pdo->query("SELECT GET_LOCK('".$this->lockName."',10)");if((int)$q->fetchColumn()!==1)throw new RuntimeException('Migration sedang dijalankan proses lain.');}
