@@ -1,7 +1,6 @@
         </div>
-        <footer class="app-footer">LIFEOS · Local-first by design</footer>
+        <footer class="app-footer">LIFEOS <span aria-hidden="true">·</span> Your life, in one place.</footer>
     </main>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-$pageTitle = $pageTitle ?? 'Overview';
+$pageTitle = $pageTitle ?? 'Dashboard';
 $currentPage = $currentPage ?? '';
 $navItems = [
     'dashboard' => ['Overview', ''],
@@ -21,9 +21,10 @@ $navItems = [
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
-    <meta name="theme-color" content="#f5f4f0">
+    <meta name="theme-color" content="#f6f7f8">
     <title><?= e($pageTitle) ?> · LIFEOS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="<?= e(url('assets/css/app.css')) ?>" rel="stylesheet">
     <script src="<?= e(url('assets/js/app.js')) ?>" defer></script>
 </head>
@@ -34,7 +35,7 @@ $navItems = [
         <p class="sidebar-label">WORKSPACE</p>
         <nav class="nav-list" aria-label="Main navigation">
             <?php foreach ($navItems as $key => [$label, $path]): ?>
-                <a class="nav-link <?= $currentPage === $key ? 'active' : '' ?>" href="<?= e(url($path)) ?>">
+                <a class="nav-link <?= $currentPage === $key ? 'active' : '' ?>" href="<?= e(url($path)) ?>" <?= $currentPage === $key ? 'aria-current="page"' : '' ?>>
                     <span><?= e($label) ?></span>
                 </a>
             <?php endforeach; ?>
@@ -44,6 +45,10 @@ $navItems = [
     <main class="main-area">
         <header class="topbar">
             <div><span class="topbar-kicker">PERSONAL WORKSPACE</span><strong><?= e($pageTitle) ?></strong></div>
-            <span class="date-label"><?= e(date('D, d M Y')) ?></span>
+            <div class="topbar-right">
+                <label class="topbar-search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Search your workspace" aria-label="Search your workspace" disabled></label>
+                <span class="date-label"><?= e(date('D, d M Y')) ?></span>
+                <span class="topbar-avatar" aria-label="Local profile">K</span>
+            </div>
         </header>
         <div class="page-content">
