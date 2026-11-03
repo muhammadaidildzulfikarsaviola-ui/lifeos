@@ -5,6 +5,7 @@ namespace LifeOS\Core;
 use PDO;
 use PDOException;
 use RuntimeException;
+use Throwable;
 
 final class Database
 {
@@ -24,5 +25,12 @@ final class Database
             throw new RuntimeException('Tidak dapat terhubung ke database LIFEOS.',0,$e);
         }
     }
-    public static function disconnect(): void { self::$connection=null; }
+    public static function transaction(callable $callback): mixed {
+        $pdo=self::connection();
+        if($pdo->inTransaction())return $callback($pdo);
+        $pdo->beginTransaction();
+        try{$result=$callback($pdo);$pdo->commit();return $result;}
+        catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
+    }
+    public static function disconnect(): void { self::$connection=null; ProfileContext::reset(); }
 }

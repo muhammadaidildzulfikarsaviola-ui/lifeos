@@ -11,7 +11,7 @@ LIFEOS is a local-first modular monolith. PHP files are loaded through explicit 
 
 ## Layers
 - Presentation: views and static assets.
-- HTTP: Request, Router, Response and controllers.
+- HTTP: Request, Router, Response, controllers and middleware.
 - Application: module services and use cases.
 - Persistence: repositories using PDO prepared statements.
 - Infrastructure: database, session, CSRF, logging, filesystem, backup and configuration.
@@ -25,7 +25,7 @@ Browser -> public/index.php -> Bootstrap -> Router -> Controller -> Service -> R
 Only public/ is web-accessible. app/, config/, database/, resources/, routes/ and storage/ stay outside the web root. Local .env is ignored by Git. MariaDB 10.4-compatible SQL only.
 
 ## Database conventions
-InnoDB, utf8mb4, BIGINT UNSIGNED IDs, CHAR(36) UUIDs for external identifiers, DECIMAL(19,2) money, UTC timestamps and DATE for calendar-only dates. Profile-owned data uses profile_id. V1 seeds one local profile and has no login.
+InnoDB, utf8mb4, BIGINT UNSIGNED IDs, CHAR(36) UUIDs for externally referenced records, DECIMAL(19,2) money, UTC timestamps and DATE for calendar-only values. Profile-owned data uses profile_id. V1 seeds one local profile and has no login.
 
 ## Security
 Bind development server to 127.0.0.1. Use PDO prepared statements, backend validation, HttpOnly/SameSite=Lax sessions, CSRF for every state-changing route, escaped HTML, and non-public storage. Technical errors are logged.

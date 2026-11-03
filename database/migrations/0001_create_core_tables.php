@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
-use PDO;
 return [
     'description'=>'Create local profile and application settings.',
-    'up'=>static function(PDO $pdo): void {
+    'up'=>static function(\PDO $pdo): void {
         $pdo->exec("CREATE TABLE IF NOT EXISTS profiles (
             id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             uuid CHAR(36) NOT NULL,
@@ -27,8 +26,9 @@ return [
             CONSTRAINT fk_app_settings_profile FOREIGN KEY(profile_id) REFERENCES profiles(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
         if((int)$pdo->query('SELECT COUNT(*) FROM profiles')->fetchColumn()===0){
+            $hex=bin2hex(random_bytes(16));$uuid=substr($hex,0,8).'-'.substr($hex,8,4).'-4'.substr($hex,13,3).'-a'.substr($hex,17,3).'-'.substr($hex,20,12);
             $q=$pdo->prepare('INSERT INTO profiles(uuid,name,timezone,currency,created_at,updated_at) VALUES(:uuid,:name,:timezone,:currency,UTC_TIMESTAMP(),UTC_TIMESTAMP())');
-            $q->execute(['uuid'=>sprintf('%04x%04x-%04x-4%03x-%04x-%012x',random_int(0,65535),random_int(0,65535),random_int(0,65535),random_int(0,4095),random_int(0,16383),random_int(0,0xffffffffffff)),'name'=>'Personal','timezone'=>'Asia/Jakarta','currency'=>'IDR']);
+            $q->execute(['uuid'=>$uuid,'name'=>'Personal','timezone'=>'Asia/Jakarta','currency'=>'IDR']);
         }
     }
 ];
