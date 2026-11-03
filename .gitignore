@@ -81,3 +81,8 @@ Desktop.ini
 # Test artifacts and coverage
 /coverage/
 .phpunit.cache/
+
+# Local development launcher
+Start-LIFEOS.bat
+
+*.lnk
