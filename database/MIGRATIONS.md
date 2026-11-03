@@ -1,10 +1,10 @@
-# Migration System
+# LIFEOS Migration System
 
-Run from project root:
-- php bin/lifeos migrate
-- php bin/lifeos migrate:status
-- php bin/lifeos migrate:retry <migration_name>
+Run from the project root:
+- D:\\XAMPP\\php\\php.exe bin\\lifeos migrate
+- D:\\XAMPP\\php\\php.exe bin\\lifeos migrate:status
+- D:\\XAMPP\\php\\php.exe bin\\lifeos migrate:retry <migration_name>
 
-Migration filenames use NNNN_lowercase_name.php and return an array with a callable up(PDO $pdo). The runner records checksums and status, takes a MariaDB advisory lock, and refuses changed applied migrations.
+Migration files use NNNN_lowercase_name.php and return an array containing a callable up(PDO $pdo). The runner creates schema_migrations, takes a MariaDB advisory lock, records SHA-256 checksums and status, and refuses changed migrations after they have been applied.
 
-MariaDB DDL can implicitly commit. A failed DDL migration may leave partial schema. Inspect and repair that state before explicitly retrying it. Never edit an applied migration; create a new migration instead. The first migration creates only profile and settings foundations; module schema follows after MariaDB 10.4 reconciliation.
+MariaDB DDL can implicitly commit. A failed DDL migration may leave partial schema. Inspect and repair that state before explicitly retrying it. Never edit an applied migration; add a new migration instead. The first migration creates the local profile and settings foundation. Domain schemas follow after the full ERD is reconciled for MariaDB 10.4.
