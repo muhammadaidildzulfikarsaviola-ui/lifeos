@@ -1,54 +1,88 @@
 <?php
 declare(strict_types=1);
-$pageTitle = $pageTitle ?? 'Dashboard';
-$currentPage = $currentPage ?? '';
-$navItems = [
-    'dashboard' => ['Overview', ''],
-    'finance' => ['Finance', 'finance/'],
-    'schedule' => ['Schedule', 'schedule/'],
-    'tasks' => ['Tasks', 'tasks/'],
-    'habits' => ['Habits', 'habits/'],
-    'journal' => ['Journal', 'journal/'],
-    'notes' => ['Notes', 'notes/'],
-    'goals' => ['Goals', 'goals/'],
-    'projects' => ['Projects', 'projects/'],
-    'reports' => ['Reports', 'reports/'],
+
+$pageTitle = $pageTitle ?? 'LIFEOS';
+$currentPage = $currentPage ?? 'dashboard';
+
+$navigation = [
+    ['slug' => 'dashboard', 'label' => 'Dashboard', 'icon' => '⌂', 'path' => ''],
+    ['slug' => 'finance', 'label' => 'Finance', 'icon' => '↗', 'path' => 'finance/'],
+    ['slug' => 'schedule', 'label' => 'Schedule', 'icon' => '▦', 'path' => 'schedule/'],
+    ['slug' => 'tasks', 'label' => 'Tasks', 'icon' => '☷', 'path' => 'tasks/'],
+    ['slug' => 'habits', 'label' => 'Habits', 'icon' => '◷', 'path' => 'habits/'],
+    ['slug' => 'journal', 'label' => 'Journal', 'icon' => '▤', 'path' => 'journal/'],
+    ['slug' => 'notes', 'label' => 'Notes', 'icon' => '▧', 'path' => 'notes/'],
+    ['slug' => 'goals', 'label' => 'Goals', 'icon' => '◎', 'path' => 'goals/'],
+    ['slug' => 'projects', 'label' => 'Projects', 'icon' => '◇', 'path' => 'projects/'],
+    ['slug' => 'reports', 'label' => 'Reports', 'icon' => '▥', 'path' => 'reports/'],
 ];
+
+$moduleCss = [
+    'finance' => 'finance.css',
+];
+
+$globalCss = url('assets/css/app.css');
+$moduleCssUrl = isset($moduleCss[$currentPage])
+    ? url('assets/css/modules/' . $moduleCss[$currentPage])
+    : null;
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
-    <meta name="theme-color" content="#f6f7f8">
-    <title><?= e($pageTitle) ?> · LIFEOS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="<?= e(url('assets/css/app.css')) ?>" rel="stylesheet">
-    <script src="<?= e(url('assets/js/app.js')) ?>" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><?= e($pageTitle) ?> | LIFEOS</title>
+
+    <link rel="stylesheet" href="<?= e($globalCss) ?>">
+
+    <?php if ($moduleCssUrl !== null): ?>
+        <link rel="stylesheet" href="<?= e($moduleCssUrl) ?>">
+    <?php endif; ?>
 </head>
+
 <body>
 <div class="app-shell">
+
     <aside class="sidebar">
-        <a class="brand" href="<?= e(url()) ?>"><span class="brand-mark">L</span><span>LIFEOS</span></a>
-        <p class="sidebar-label">WORKSPACE</p>
-        <nav class="nav-list" aria-label="Main navigation">
-            <?php foreach ($navItems as $key => [$label, $path]): ?>
-                <a class="nav-link <?= $currentPage === $key ? 'active' : '' ?>" href="<?= e(url($path)) ?>" <?= $currentPage === $key ? 'aria-current="page"' : '' ?>>
-                    <span><?= e($label) ?></span>
-                </a>
-            <?php endforeach; ?>
-        </nav>
-        <div class="sidebar-footer"><span class="local-dot"></span> Local workspace</div>
+        <a href="<?= e(url('')) ?>" class="sidebar-brand">
+            <span class="brand-mark">L</span>
+            <span class="brand-name">LIFEOS</span>
+        </a>
+
+        <div class="sidebar-section">
+            <p class="sidebar-label">WORKSPACE</p>
+
+            <nav class="sidebar-nav">
+                <?php foreach ($navigation as $item): ?>
+                    <a
+                        href="<?= e(url($item['path'])) ?>"
+                        class="sidebar-link <?= $currentPage === $item['slug'] ? 'active' : '' ?>"
+                    >
+                        <span class="sidebar-icon"><?= e($item['icon']) ?></span>
+                        <span><?= e($item['label']) ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+            <span class="sidebar-version">LIFEOS · LOCAL WORKSPACE</span>
+        </div>
     </aside>
+
     <main class="main-area">
         <header class="topbar">
-            <div><span class="topbar-kicker">PERSONAL WORKSPACE</span><strong><?= e($pageTitle) ?></strong></div>
+            <div class="topbar-left">
+                <span class="topbar-context">Personal workspace</span>
+            </div>
+
             <div class="topbar-right">
-                <label class="topbar-search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Search your workspace" aria-label="Search your workspace" disabled></label>
-                <span class="date-label"><?= e(date('D, d M Y')) ?></span>
-                <span class="topbar-avatar" aria-label="Local profile">K</span>
+                <span class="local-indicator">
+                    <span></span>
+                    Local
+                </span>
             </div>
         </header>
+
         <div class="page-content">
