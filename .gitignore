@@ -1,0 +1,83 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.testing.example
+
+# Composer dependencies
+/vendor/
+
+# Node dependencies and build cache
+/node_modules/
+/.npm/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Runtime storage
+/storage/*
+!/storage/.gitkeep
+!/storage/app/
+!/storage/app/.gitkeep
+!/storage/logs/
+!/storage/logs/.gitkeep
+!/storage/backups/
+!/storage/backups/.gitkeep
+!/storage/imports/
+!/storage/imports/.gitkeep
+!/storage/exports/
+!/storage/exports/.gitkeep
+
+# User uploads and attachments
+/public/uploads/
+/public/attachments/
+
+# Logs
+*.log
+/logs/
+
+# Database dumps and local database files
+*.sql.gz
+*.dump
+*.bak
+*.sqlite
+*.sqlite3
+/database/dumps/
+/database/backups/
+
+# Temporary and cache files
+*.tmp
+*.temp
+*.cache
+/cache/
+/tmp/
+/.phpunit.cache/
+/.phpunit.result.cache
+
+# PHP generated files
+.php-version
+.phpunit-watcher.yml
+
+# IDE and editor
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# VS Code local workspace settings
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Operating system
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build artifacts
+/build/
+/dist/
+
+# Test artifacts and coverage
+/coverage/
+.phpunit.cache/

@@ -1,0 +1,757 @@
+# LIFEOS
+## Product Requirements Document (PRD)
+
+**Versi:** 1.0  
+**Status:** Draft untuk implementasi  
+**Platform:** Local Web Application  
+**Target:** Personal Life Management System
+
+---
+
+# 1. Product Overview
+
+## 1.1 Deskripsi Produk
+
+LIFEOS adalah aplikasi manajemen kehidupan pribadi berbasis web lokal yang mengintegrasikan pengelolaan keuangan, jadwal, pekerjaan, kebiasaan, jurnal, catatan, tujuan, proyek, dan laporan dalam satu sistem.
+
+Aplikasi dirancang untuk membantu pengguna mengelola aktivitas sehari-hari melalui satu pusat pengelolaan data yang saling terhubung.
+
+LIFEOS berjalan secara lokal menggunakan XAMPP, PHP Native, dan MySQL. Sistem tidak memerlukan layanan cloud maupun integrasi AI.
+
+## 1.2 Product Goals
+
+1. Menyatukan berbagai aktivitas personal dalam satu aplikasi.
+2. Menyediakan pencatatan dan pemantauan progres yang terstruktur.
+3. Menghubungkan task, project, goal, schedule, habit, dan finance.
+4. Menyediakan laporan berdasarkan data aktual.
+5. Menjaga data tetap berada di penyimpanan lokal pengguna.
+6. Menyediakan fondasi arsitektur yang dapat dikembangkan menjadi multiuser.
+
+## 1.3 Product Principles
+
+- Modular: setiap modul memiliki halaman dan tanggung jawab tersendiri.
+- Connected: data antar-modul dapat saling terhubung.
+- Local-first: fungsi inti tidak bergantung pada internet.
+- Lightweight: menghindari dependency yang tidak diperlukan.
+- Data integrity: perubahan data harus tervalidasi.
+- No AI integration: tidak ada chatbot, LLM, maupun AI API di dalam aplikasi.
+
+---
+
+# 2. Target Users
+
+## 2.1 Primary User
+
+Pengguna individu yang membutuhkan sistem terpusat untuk mengelola:
+
+- Keuangan pribadi.
+- Jadwal dan aktivitas.
+- Pekerjaan dan tugas.
+- Kebiasaan.
+- Catatan dan jurnal.
+- Tujuan pribadi.
+- Proyek personal maupun profesional.
+
+## 2.2 User Model
+
+Versi pertama menggunakan satu pengguna tanpa login.
+
+Namun, struktur database disiapkan agar setiap data dapat dikaitkan dengan profil atau pemilik data pada pengembangan multiuser mendatang.
+
+Tidak ada fitur autentikasi pada versi pertama.
+
+---
+
+# 3. Scope Produk
+
+Seluruh sembilan modul termasuk dalam release pertama.
+
+1. Finance Management
+2. Schedule & Calendar
+3. Task Management
+4. Habit Tracker
+5. Personal Journal
+6. Notes & Ideas
+7. Goals & Planning
+8. Reports & Analytics
+9. Project Management
+
+Tidak ada modul tambahan yang ditetapkan di luar sembilan modul tersebut.
+
+---
+
+# 4. Functional Requirements
+
+## 4.1 Finance Management
+
+### Tujuan
+Mengelola arus keuangan, saldo akun, anggaran, tagihan, dan pinjaman personal.
+
+### Fitur
+
+**A. Income & Expense**
+- Mencatat pemasukan dan pengeluaran.
+- Mengelola kategori transaksi.
+- Mencatat tanggal transaksi.
+- Menambahkan deskripsi dan catatan.
+- Melihat riwayat transaksi.
+- Melakukan pencarian dan filter.
+
+**B. Account / Wallet Management**
+- Membuat beberapa akun atau dompet.
+- Menyimpan saldo awal.
+- Menghitung saldo berdasarkan transaksi.
+- Menyediakan penyesuaian saldo manual.
+- Mendukung transfer internal antar-akun.
+
+**C. Budget Management**
+- Menentukan anggaran berdasarkan kategori dan periode.
+- Membandingkan anggaran dengan pengeluaran aktual.
+- Menampilkan persentase penggunaan budget.
+- Memberikan indikator ketika anggaran mendekati atau melewati batas.
+
+**D. Debt / Personal Borrowing**
+- Mencatat nama pemberi pinjaman.
+- Mencatat nominal pinjaman.
+- Mencatat tanggal pinjam.
+- Tanggal jatuh tempo bersifat opsional.
+- Bunga bersifat opsional.
+- Mendukung pelunasan sekali bayar.
+- Menyimpan riwayat pembayaran.
+- Menghitung sisa pinjaman secara otomatis.
+- Status: belum lunas atau lunas.
+
+**E. Recurring Transactions**
+- Menyediakan template transaksi berulang.
+- Mendukung transaksi pemasukan dan pengeluaran.
+- Mengatur frekuensi dan periode.
+- Menyediakan pengingat dan pencatatan sesuai konfigurasi.
+
+**F. Fixed Bill Reminder**
+- Membuat template tagihan rutin.
+- Mengatur nominal, nama tagihan, dan periode pengingat.
+- Memberikan pengingat tanpa otomatis membuat transaksi.
+- Pencatatan tagihan aktual dilakukan secara manual.
+- Template dapat diarsipkan.
+- Riwayat tagihan yang sudah dicatat tetap dipertahankan.
+
+### Business Rules
+- Mata uang default adalah IDR.
+- Transfer internal tidak dihitung sebagai income atau expense.
+- Saldo akun dihitung dari saldo awal, transaksi, transfer, dan adjustment.
+- Pembayaran pinjaman dicatat sebagai transaksi keuangan dan mengurangi sisa pinjaman.
+- Tagihan rutin tidak dianggap sudah dibayar hanya karena reminder muncul.
+
+---
+
+## 4.2 Schedule & Calendar
+
+### Tujuan
+Mengelola event, aktivitas, jadwal kerja, dan pengingat.
+
+### Fitur
+- Month view.
+- Week view.
+- Day view.
+- Agenda/List view.
+- Recurring events.
+- Event reminders.
+- Daily dan weekly agenda.
+- Drag and drop scheduling.
+- Public holidays.
+- Manual shift scheduling.
+- Integrasi dengan task dan project.
+- Status event selesai.
+
+### Pengaturan Kalender
+- Awal minggu: Senin.
+- Format waktu: 12-hour.
+- Timezone default: Asia/Jakarta.
+
+### Reminder
+- Saat event berlangsung.
+- 5 menit sebelumnya.
+- 15 menit sebelumnya.
+- 30 menit sebelumnya.
+- 1 jam sebelumnya.
+- 1 hari sebelumnya.
+- Custom reminder.
+
+### Shift
+Shift dibuat secara manual dengan:
+- Nama shift.
+- Tanggal.
+- Jam mulai opsional.
+- Jam selesai opsional.
+- Catatan tambahan opsional.
+
+Tanggal dapat dipilih langsung melalui kalender.
+
+### Public Holidays
+- Mengambil data hari libur dari sumber online.
+- Menyimpan cache lokal.
+- Mendukung impor manual.
+- Data yang telah tersimpan dapat dilihat ketika offline.
+
+---
+
+## 4.3 Task Management
+
+### Tujuan
+Mengelola pekerjaan dan aktivitas yang membutuhkan penyelesaian.
+
+### Fitur
+- Task CRUD.
+- Priority.
+- Deadline.
+- Status dan progress.
+- Nested subtasks tanpa batas kedalaman secara fungsional.
+- Categories dan tags.
+- Kanban board.
+- Recurring tasks.
+- Task dependencies.
+- Manual time tracking.
+- Relasi dengan project.
+- Relasi dengan schedule.
+
+### Task Progress Rules
+- Progress parent dihitung dari rata-rata progress subtask.
+- Semua subtask memiliki bobot yang sama.
+- Dependency hanya menghasilkan peringatan.
+- Dependency tidak memblokir penyelesaian task.
+- Pengguna tetap dapat mengubah status task secara manual.
+
+### ChatGPT Manual Progress Bridge
+
+LIFEOS menyediakan fasilitas pertukaran data manual antara aplikasi dan ChatGPT.
+
+Alur:
+
+1. LIFEOS menghasilkan prompt berisi konteks task.
+2. Pengguna menyalin prompt ke ChatGPT.
+3. ChatGPT mengembalikan data update dalam format JSON.
+4. Pengguna mengimpor JSON ke LIFEOS.
+5. LIFEOS memvalidasi data dan menampilkan preview.
+6. Pengguna mengonfirmasi perubahan.
+7. LIFEOS menyimpan perubahan ke database.
+
+Ketentuan:
+- Tidak ada koneksi API AI.
+- ChatGPT tidak memiliki akses langsung ke database.
+- JSON tidak boleh dieksekusi sebagai SQL.
+- ID task harus diverifikasi.
+- Perubahan harus melewati validasi dan konfirmasi.
+- Riwayat perubahan harus disimpan.
+
+---
+
+## 4.4 Habit Tracker
+
+### Tujuan
+Memantau konsistensi kebiasaan dan perkembangan aktivitas personal.
+
+### Fitur
+- Daily tracking.
+- Weekly tracking.
+- Habit checklist.
+- Quantitative habit.
+- Duration-based habit.
+- Custom schedule.
+- Categories.
+- Reminder.
+- Current streak.
+- Longest streak.
+- Completion percentage.
+- Missed days.
+- Weekly statistics.
+- Monthly statistics.
+
+### Habit Rules
+- Streak mengikuti jadwal habit.
+- Rest day tidak dihitung sebagai hari berhasil.
+- Rest day tidak memutus streak.
+- Rest day dikecualikan dari denominator completion.
+- Hari yang seharusnya dikerjakan tetapi tidak diselesaikan dihitung sebagai missed day.
+
+---
+
+## 4.5 Personal Journal
+
+### Tujuan
+Menyediakan ruang pencatatan aktivitas dan refleksi personal.
+
+### Fitur
+- Multiple journal entries per day.
+- Daily journal.
+- Mood tracking.
+- Categories dan tags.
+- Search.
+- Calendar view.
+- Writing templates.
+- Daily reflection prompts.
+- Markdown editor.
+- Rich text editor.
+- Manual save.
+
+### Mood Options
+- Happy
+- Neutral
+- Sad
+- Angry
+- Anxious
+- Excited
+- Tired
+
+---
+
+## 4.6 Notes & Ideas
+
+### Tujuan
+Menyediakan sistem penyimpanan informasi dan ide.
+
+### Fitur
+- Quick notes.
+- Folders / notebooks.
+- Tags.
+- Pinned notes.
+- Search dan filter.
+- Archive.
+- Attachments.
+- Checklist notes.
+- Markdown editor.
+- Rich text editor.
+- Manual save.
+
+---
+
+## 4.7 Goals & Planning
+
+### Tujuan
+Membantu pengguna menentukan target dan memantau pencapaiannya.
+
+### Fitur
+- Daily goals.
+- Weekly goals.
+- Monthly goals.
+- Yearly goals.
+- Long-term goals.
+- Milestones.
+- Progress percentage.
+- Categories.
+- Deadline.
+- Link ke project.
+- Link ke task.
+- Link ke habit.
+- Link ke finance / savings.
+
+### Goal Progress Rules
+
+Setiap goal dapat menggunakan salah satu metode:
+
+**Linked Item**
+Progress dihitung dari item yang terhubung.
+
+**Measurable Target**
+Progress dihitung berdasarkan nilai aktual dibandingkan target.
+
+Metode dipilih untuk setiap goal.
+
+---
+
+## 4.8 Project Management
+
+### Tujuan
+Mengelola proyek personal dan profesional.
+
+### Fitur
+- Project overview.
+- Project status.
+- Deadlines.
+- Milestones.
+- Linked tasks.
+- Progress tracking.
+- Project budget.
+- Project notes.
+- Categories.
+- Timeline.
+
+### Project Status
+- Not started.
+- Planning.
+- In progress.
+- On hold.
+- Completed.
+- Cancelled.
+
+### Project Progress
+Progress project dihitung berdasarkan task yang terhubung.
+
+### Project Budget
+Mencakup:
+- Planned budget.
+- Actual budget.
+- Integrasi dengan Finance.
+
+---
+
+## 4.9 Reports & Analytics
+
+### Tujuan
+Memberikan gambaran performa dan perkembangan berdasarkan data LIFEOS.
+
+### Reports
+- Monthly financial report.
+- Income vs expense.
+- Budget analysis.
+- Task completion statistics.
+- Habit performance.
+- Project progress.
+- Goal achievement.
+- Time tracking.
+- Yearly summary.
+
+### Report Periods
+- Daily.
+- Weekly.
+- Monthly.
+- Quarterly.
+- Yearly.
+- Custom date range.
+
+### Visualization
+Menggunakan Chart.js untuk:
+- Bar chart.
+- Line chart.
+- Pie / doughnut chart.
+- Progress visualization.
+
+---
+
+# 5. Dashboard Requirements
+
+Dashboard berfungsi sebagai ringkasan kondisi dan aktivitas pengguna, bukan pengganti halaman modul.
+
+### Dashboard Widgets
+1. Finance summary.
+2. Today's schedule.
+3. Upcoming tasks.
+4. Habit progress.
+5. Project progress.
+6. Quick notes.
+7. Goals overview.
+8. Recent journal entries.
+9. Upcoming bills & installments.
+10. Monthly analytics.
+
+Widget harus menampilkan data aktual dari modul terkait.
+
+---
+
+# 6. Cross-Module Integration
+
+| Module A | Module B | Integrasi |
+|---|---|---|
+| Task | Project | Task menjadi bagian project |
+| Task | Schedule | Task dapat dijadwalkan |
+| Goal | Project | Project mendukung goal |
+| Goal | Task | Task mendukung goal |
+| Schedule | Project | Event dapat dikaitkan dengan project |
+| Journal | Habit | Refleksi habit |
+| Journal | Mood | Mood tracking |
+| Finance | Goal | Target keuangan dan savings |
+| Habit | Goal | Habit mendukung pencapaian goal |
+
+Relasi harus menggunakan referensi data yang konsisten agar perubahan dan penghapusan tidak merusak data terkait.
+
+---
+
+# 7. User Interface & User Experience
+
+### Design Direction
+- Editorial design.
+- Light theme.
+- No gradient.
+- No glassmorphism.
+- Comfortable density.
+- Konsistensi typography.
+- Bahasa Indonesia.
+
+### Navigation
+- Hybrid sidebar + topbar.
+- Sidebar memiliki auto behavior.
+- Setiap modul mempunyai halaman terpisah.
+- Dashboard menjadi halaman ringkasan.
+
+### Responsive
+- Desktop.
+- Tablet.
+- Mobile.
+
+### Interaction
+- Toast notifications.
+- Modal dialogs.
+- Delete confirmation.
+- Common keyboard shortcuts.
+- Drag and drop.
+- Global search.
+- Undo recently deleted actions.
+
+### UX States
+Semua halaman relevan harus memiliki:
+- Empty state.
+- Loading state.
+- Error state.
+- Validation state.
+- Success feedback.
+
+---
+
+# 8. Data Management
+
+## 8.1 Database
+- MySQL.
+- Struktur modular.
+- Relasi antartabel yang konsisten.
+- Persiapan ownership/profile untuk multiuser masa depan.
+
+## 8.2 Attachments
+- Penyimpanan lokal.
+- Maksimal 50 MB per file.
+- JPG/JPEG, PNG, WEBP, PDF, DOCX, XLSX, TXT, ZIP.
+
+## 8.3 Import
+- CSV.
+- XLSX.
+- Preview sebelum penyimpanan.
+- Validasi data.
+- Penanganan data duplikat dan format tidak valid.
+- Pengguna dapat membatalkan impor sebelum commit.
+
+## 8.4 Trash
+- Shared trash.
+- Soft delete secara default.
+- Retensi selamanya.
+- Permanent deletion hanya melalui tindakan eksplisit.
+
+## 8.5 Backup
+- Manual backup.
+- Automatic monthly backup.
+- Retensi forever.
+- Custom backup location.
+- Timestamp pada backup.
+- Validasi backup sebelum restore.
+
+## 8.6 Restore
+1. Memilih file backup.
+2. Membaca metadata backup.
+3. Memvalidasi struktur dan kompatibilitas.
+4. Menampilkan preview.
+5. Meminta konfirmasi.
+6. Melakukan restore.
+7. Memverifikasi hasil.
+
+---
+
+# 9. Technical Requirements
+
+## 9.1 Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | PHP Native 8.2 |
+| Database | MySQL |
+| Web Server | Apache |
+| Environment | XAMPP |
+| UI Framework | Bootstrap 5.3 |
+| JavaScript | Vanilla JS |
+| Lightweight Interaction | Alpine.js |
+| Calendar | FullCalendar |
+| Drag & Drop | SortableJS |
+| Charts | Chart.js |
+
+jQuery tidak digunakan pada baseline kecuali ditemukan kebutuhan teknis spesifik yang tidak dapat ditangani stack utama.
+
+## 9.2 Architecture
+- Modular monolith.
+- Direct file access routing.
+- Pemisahan config, includes, assets, dan modul.
+- Reusable components.
+- Centralized database connection.
+- Centralized validation dan security utilities.
+
+## 9.3 Scheduler
+Menggunakan Windows Task Scheduler yang menjalankan PHP CLI scripts.
+
+Tidak membutuhkan permanent PHP daemon.
+
+## 9.4 Offline
+Fungsi inti tersedia secara lokal tanpa koneksi internet.
+
+Fungsi yang membutuhkan internet:
+- Pembaruan public holiday.
+- Pengambilan data eksternal.
+- Browser notification sesuai dukungan browser.
+
+---
+
+# 10. Security Requirements
+
+- CSRF protection.
+- Input validation.
+- Prepared statements.
+- Output escaping untuk mencegah XSS.
+- File upload validation.
+- Batas ukuran upload.
+- Pengamanan nama dan lokasi file.
+- Validasi impor.
+- Validasi JSON.
+- Konfirmasi penghapusan permanen.
+- Change history.
+
+---
+
+# 11. Non-Functional Requirements
+
+## Performance
+Target balanced:
+- Navigasi antarmodul responsif.
+- Query menggunakan indeks yang sesuai.
+- Pagination untuk daftar data besar.
+- Lazy loading untuk konten yang diperlukan.
+- Hindari dependency berat tanpa kebutuhan.
+- Optimasi rendering kalender dan chart.
+
+## Reliability
+- Data bertahan setelah restart.
+- Transaksi database menggunakan mekanisme yang aman.
+- Operasi penting memiliki validasi.
+- Backup dan restore dapat diuji.
+
+## Maintainability
+- Struktur modular.
+- Fungsi reusable.
+- Penamaan konsisten.
+- Pemisahan business logic dan presentation.
+- Dokumentasi teknis.
+
+## Compatibility
+- Browser desktop modern.
+- Chrome, Edge, dan Brave menjadi target pengujian utama.
+- Responsive mobile dan tablet.
+
+---
+
+# 12. Development Strategy
+
+Semua modul tersedia pada release pertama, tetapi implementasi dilakukan berdasarkan dependency.
+
+### Phase 1: Foundation
+- Project structure.
+- Database connection.
+- Base layout.
+- Navigation.
+- Shared components.
+- Validation.
+- Security.
+- Trash.
+- Change history.
+
+### Phase 2: Core Operations
+- Finance.
+- Schedule.
+- Task Management.
+
+### Phase 3: Personal Productivity
+- Project Management.
+- Goals & Planning.
+- Habit Tracker.
+
+### Phase 4: Personal Knowledge
+- Personal Journal.
+- Notes & Ideas.
+
+### Phase 5: Insights & Integration
+- Reports & Analytics.
+- Dashboard.
+- Cross-module integration.
+- ChatGPT JSON bridge.
+
+### Phase 6: Reliability
+- Backup.
+- Restore.
+- Import/export.
+- Offline validation.
+- Responsive testing.
+- Performance testing.
+- Stabilization.
+
+---
+
+# 13. Testing Requirements
+
+### Unit Testing
+Menguji fungsi dan business logic secara terpisah.
+
+### Integration Testing
+Menguji hubungan antar-modul dan operasi database.
+
+### Manual UI Testing
+Menguji navigasi, form, modal, responsivitas, dan interaksi.
+
+### Performance Testing
+Menguji performa pada data dalam jumlah wajar dan skenario penggunaan normal.
+
+### Backup & Restore Testing
+Memastikan backup dapat dipulihkan dan data tetap konsisten.
+
+---
+
+# 14. Acceptance Criteria
+
+LIFEOS dinyatakan memenuhi baseline release pertama apabila:
+
+1. Seluruh sembilan modul tersedia.
+2. Semua CRUD berfungsi.
+3. Data tetap tersimpan setelah aplikasi direstart.
+4. Tampilan responsif pada desktop dan mobile.
+5. Tidak ada critical PHP atau JavaScript errors.
+6. Hubungan antarmodul berfungsi.
+7. Backup dan restore berhasil diuji.
+8. Tidak ada navigasi rusak atau tombol tanpa fungsi.
+9. Empty dan loading states tersedia.
+10. Semua form memiliki validasi dan error handling.
+11. Fitur import memvalidasi data sebelum penyimpanan.
+12. Trash dan pemulihan data berfungsi.
+13. Reminder bekerja sesuai konfigurasi dan dukungan browser.
+14. ChatGPT JSON bridge memvalidasi data sebelum perubahan database.
+15. Basic performance testing berhasil.
+
+---
+
+# 15. Out of Scope
+
+Hal berikut tidak termasuk dalam LIFEOS v1.0:
+
+- AI chatbot internal.
+- Integrasi LLM/API AI.
+- Automatic database access dari ChatGPT.
+- Cloud synchronization.
+- Login dan authentication.
+- Multiuser aktif.
+- Mobile native application.
+- Integrasi pembayaran otomatis.
+- Automatic bank transaction synchronization.
+
+Fitur tersebut dapat dipertimbangkan dalam pengembangan berikutnya, tetapi bukan bagian dari baseline saat ini.
+
+---
+
+# 16. Final Product Definition
+
+LIFEOS v1.0 adalah sistem manajemen kehidupan pribadi berbasis web lokal yang mengintegrasikan sembilan modul utama dalam satu database MySQL.
+
+Sistem mengutamakan modularitas, integrasi data, kemudahan penggunaan, keamanan, dan performa yang seimbang.
+
+Aplikasi berjalan tanpa login, tanpa ketergantungan cloud, dan tanpa integrasi AI. Pengguna memiliki kendali atas data, backup, dan seluruh aktivitas pencatatan.
+
+**Dokumen ini menjadi acuan kebutuhan produk untuk tahap system design dan implementation planning.**
