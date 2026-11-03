@@ -24,7 +24,7 @@ use LifeOS\Core\Exceptions\NotFoundException;
 use LifeOS\Core\Exceptions\ConflictException;
 use LifeOS\Core\Exceptions\ForbiddenOperationException;
 
-$passed=0;$failed=0;
+Session::start(); // Start the session before the test runner prints output.\n\n$passed=0;$failed=0;
 $test=static function(string $name,callable $callback)use(&$passed,&$failed):void{
     try{$callback();$passed++;echo "[PASS] {$name}\n";}
     catch(Throwable $e){$failed++;echo "[FAIL] {$name}: {$e->getMessage()}\n";}
@@ -70,7 +70,7 @@ $test('Router rejects malformed JSON before controller',static function()use($as
     $assert($r->statusCode()===400&&!$called);
 });
 $test('CSRF rejects write requests without token',static function()use($assert):void{
-    Session::start();$router=new Router();$router->post('/api/write',static fn():Response=>Response::success());
+    $router=new Router();$router->post('/api/write',static fn():Response=>Response::success());
     $r=$router->dispatch(new Request([],[],[],['REQUEST_METHOD'=>'POST','REQUEST_URI'=>'/api/write','CONTENT_TYPE'=>'application/json'],'{}'));
     $assert($r->statusCode()===419);
 });

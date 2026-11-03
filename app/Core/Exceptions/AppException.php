@@ -11,7 +11,7 @@ class AppException extends RuntimeException
         private readonly int $httpStatus=400,
         private readonly string $errorCode='APPLICATION_ERROR',
         private readonly ?array $fieldErrors=null,
-        ?\\Throwable $previous=null
+        ?\Throwable $previous=null
     ) { parent::__construct($message,0,$previous); }
 
     public function httpStatus(): int { return $this->httpStatus; }
