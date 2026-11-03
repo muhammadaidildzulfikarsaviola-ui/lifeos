@@ -1,0 +1,17 @@
+Options -Indexes
+DirectoryIndex index.php
+
+# LIFEOS v1 hanya untuk localhost. Jangan expose ke jaringan publik.
+<RequireAny>
+    Require local
+</RequireAny>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(config|includes|database|storage)(/|$) - [F,L,NC]
+    RewriteRule (^|/)\. - [F,L]
+</IfModule>
+
+<FilesMatch "\.(sql|log|ini|env|md)$">
+    Require all denied
+</FilesMatch>

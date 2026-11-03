@@ -1,36 +1,59 @@
-# LIFEOS SOFTWARE ARCHITECTURE
+# LIFEOS Architecture (Simple Local PHP)
 
-**Version:** 1.1  
-**Architecture:** Modular Monolith  
-**Runtime:** PHP Native 8.2, no Composer for local v1  
-**Database:** MariaDB 10.4.32  
-**Environment:** Windows + XAMPP  
-**Deployment:** Localhost only
+## Prinsip
+LIFEOS adalah aplikasi personal single-user yang berjalan lokal melalui XAMPP. Pilih struktur PHP Native yang mudah dibaca dan diedit langsung. Tidak menggunakan framework, Composer, dependency injection, service container, repository layer, atau sistem login pada v1.
 
-LIFEOS is a local-first modular monolith. PHP files are loaded through explicit includes and a small namespace loader in the front controller. PDO is the persistence interface.
+## Stack
+- PHP 8.2+
+- MariaDB 10.4+ / MySQL
+- PDO dengan prepared statements
+- Bootstrap 5.3 dan CSS aplikasi
+- Vanilla JavaScript
 
-## Layers
-- Presentation: views and static assets.
-- HTTP: Request, Router, Response, controllers and middleware.
-- Application: module services and use cases.
-- Persistence: repositories using PDO prepared statements.
-- Infrastructure: database, session, CSRF, logging, filesystem, backup and configuration.
+## Struktur
+```
+lifeos/
+├── assets/
+│   ├── css/app.css
+│   └── js/app.js
+├── config/
+│   ├── database.php
+│   └── session.php
+├── dashboard/
+├── finance/
+├── schedule/
+├── tasks/
+├── habits/
+├── journal/
+├── notes/
+├── goals/
+├── projects/
+├── reports/
+├── database/lifeos.sql
+├── includes/
+│   ├── bootstrap.php
+│   ├── header.php
+│   └── footer.php
+├── function.php
+└── index.php
+```
 
-Controllers do not contain business rules or SQL. Views never access repositories. Cross-module integration occurs through service contracts.
+Setiap modul memiliki folder dan file PHP sendiri. Gunakan partial dari includes untuk layout bersama. Letakkan query dan fungsi yang spesifik dekat dengan modulnya. Pecah file hanya ketika ukurannya memang membutuhkan.
 
-## Request lifecycle
-Browser -> public/index.php -> Bootstrap -> Router -> Controller -> Service -> Repository -> PDO/MariaDB -> Response.
+## Database
+Koneksi tunggal dibuat secara lazy melalui `db()` di `function.php`. Gunakan PDO prepared statements untuk seluruh input pengguna. Simpan nominal keuangan sebagai DECIMAL, tanggal kalender sebagai DATE, dan timestamp sebagai DATETIME/TIMESTAMP sesuai kebutuhan. Jangan membangun semua tabel modul sebelum modul terkait mulai dikerjakan.
 
-## Boundaries
-Only public/ is web-accessible. app/, config/, database/, resources/, routes/ and storage/ stay outside the web root. Local .env is ignored by Git. MariaDB 10.4-compatible SQL only.
+## Session tanpa login
+Session hanya digunakan untuk CSRF token dan state sementara. Cookie menggunakan HttpOnly, SameSite=Strict, Secure saat HTTPS, strict mode, cookie-only, ID regeneration saat sesi baru, dan idle timeout 30 menit. Tidak ada user identity atau autentikasi.
 
-## Database conventions
-InnoDB, utf8mb4, BIGINT UNSIGNED IDs, CHAR(36) UUIDs for externally referenced records, DECIMAL(19,2) money, UTC timestamps and DATE for calendar-only values. Profile-owned data uses profile_id. V1 seeds one local profile and has no login.
+## Keamanan
+- Instalasi v1 hanya localhost.
+- Folder config, includes, database, dan storage tidak boleh diakses langsung melalui HTTP.
+- Escape output HTML dengan `e()`.
+- Gunakan prepared statements.
+- Verifikasi CSRF pada setiap operasi yang mengubah data.
+- Validasi input di server.
+- Jangan simpan upload di folder publik.
 
-## Security
-Bind development server to 127.0.0.1. Use PDO prepared statements, backend validation, HttpOnly/SameSite=Lax sessions, CSRF for every state-changing route, escaped HTML, and non-public storage. Technical errors are logged.
-
-## Local runtime
-D:\XAMPP\php\php.exe -S 127.0.0.1:8000 -t public
-
-The PHP built-in server is for local development only and must not be exposed to LAN or the public internet.
+## Cara berkembang
+Bangun dashboard dasar, lalu implementasikan satu modul sampai CRUD berjalan dan diuji. Hindari membuat abstraksi sebelum ada kebutuhan nyata. Backup, import/export, trash, dan laporan lanjutan ditambahkan saat modul yang membutuhkannya sudah ada.
