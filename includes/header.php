@@ -19,12 +19,17 @@ $navigation = [
 
 $moduleCss = [
     'finance' => 'finance.css',
+    'schedule' => 'schedule.css',
+    'tasks' => 'tasks.css',
 ];
 
 $globalCss = url('assets/css/app.css');
 $moduleCssUrl = isset($moduleCss[$currentPage])
     ? url('assets/css/modules/' . $moduleCss[$currentPage])
     : null;
+
+$pageCss = $pageCss ?? null;
+$pageCssUrl = $pageCss !== null ? url('assets/css/' . ltrim($pageCss, '/')) : null;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -38,6 +43,10 @@ $moduleCssUrl = isset($moduleCss[$currentPage])
 
     <?php if ($moduleCssUrl !== null): ?>
         <link rel="stylesheet" href="<?= e($moduleCssUrl) ?>">
+    <?php endif; ?>
+
+    <?php if ($pageCssUrl !== null): ?>
+        <link rel="stylesheet" href="<?= e($pageCssUrl) ?>">
     <?php endif; ?>
 </head>
 

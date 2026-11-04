@@ -30,7 +30,7 @@ function url(string $path = ''): string
     }
 
     $base = preg_replace(
-        '~/(dashboard|finance|schedule|tasks|habits|journal|notes|goals|projects|reports)$~',
+        '~/?\b(dashboard|finance|schedule|tasks|habits|journal|notes|goals|projects|reports)$~',
         '',
         $base
     ) ?? $base;
@@ -59,4 +59,27 @@ function redirect(string $path): never
 {
     header('Location: ' . url($path));
     exit;
+}
+
+function set_flash(string $type, string $message): void
+{
+    $_SESSION['_flash'] = [
+        'type' => $type,
+        'message' => $message,
+    ];
+}
+
+function get_flash(): ?array
+{
+    $flash = $_SESSION['_flash'] ?? null;
+    unset($_SESSION['_flash']);
+    return is_array($flash) ? $flash : null;
+}
+
+function format_rupiah(mixed $amount, bool $prefix = true): string
+{
+    $num = (float) ($amount ?? 0);
+    $formatted = number_format(abs($num), 0, ',', '.');
+    $sign = $num < 0 ? '-' : '';
+    return $sign . ($prefix ? 'Rp ' : '') . $formatted;
 }
