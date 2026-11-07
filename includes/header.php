@@ -24,6 +24,7 @@ $moduleCss = [
 ];
 $moduleJs = [
     'finance' => 'finance.js',
+    'schedule' => 'schedule.js',
 ];
 
 $globalCss = url('assets/css/app.css');

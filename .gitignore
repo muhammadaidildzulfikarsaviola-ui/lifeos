@@ -1,8 +1,18 @@
+
+# ==========================================
+# LIFEOS - Git Ignore
+# ==========================================
+
 # Environment and secrets
 .env
 .env.*
 !.env.example
 !.env.testing.example
+
+# Local configuration containing credentials
+/config/database.local.php
+/config/secrets.php
+/config/local.php
 
 # Composer dependencies
 /vendor/
@@ -36,14 +46,30 @@ pnpm-debug.log*
 *.log
 /logs/
 
-# Database dumps and local database files
+# Database backups and exports
 *.sql.gz
+*.sql.zip
+*.sql.bz2
 *.dump
 *.bak
 *.sqlite
 *.sqlite3
+
 /database/dumps/
 /database/backups/
+/database/exports/
+/database/snapshots/
+/database/local/
+
+# Structure-only or local database exports
+*.structure.sql
+*.schema.sql
+*.export.sql
+*.local.sql
+
+# IMPORTANT:
+# Keep database/lifeos.sql tracked if it is
+# the official initial database schema.
 
 # Temporary and cache files
 *.tmp
@@ -80,9 +106,17 @@ Desktop.ini
 
 # Test artifacts and coverage
 /coverage/
-.phpunit.cache/
 
-# Local development launcher
+# Local development launchers
 Start-LIFEOS.bat
+run-lifeos.bat
+*.local.bat
 
+# Certificates and private keys
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Windows shortcuts
 *.lnk

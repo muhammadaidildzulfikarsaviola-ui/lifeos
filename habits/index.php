@@ -11,7 +11,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 <section class="module-placeholder">
     <p class="eyebrow">LIFEOS MODULE</p>
     <h1>Habits</h1>
-    <p>Modul Habits siap dikembangkan. Halaman ini menggunakan layout bersama LIFEOS.</p>
+    <p>Coming Soon.</p>
     <p><code>habits/index.php</code></p>
 </section>
 <?php require LIFEOS_ROOT . '/includes/footer.php'; ?>

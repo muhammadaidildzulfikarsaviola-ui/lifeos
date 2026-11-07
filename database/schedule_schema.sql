@@ -5,7 +5,7 @@ USE lifeos;
 
 -- 1. Event Categories (optional, can be seeded later)
 CREATE TABLE IF NOT EXISTS schedule_categories (
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     color VARCHAR(20) NULL DEFAULT '#5a5a5a',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS schedule_categories (
 
 -- 2. Events Table
 CREATE TABLE IF NOT EXISTS schedule_events (
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     title VARCHAR(200) NOT NULL,
     description TEXT NULL,
     start_date DATE NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS schedule_events (
     end_date DATE NOT NULL,
     end_time TIME NULL,
     all_day TINYINT(1) NOT NULL DEFAULT 0,
-    category_id INT UNSIGNED NULL,
+    category_id BIGINT UNSIGNED NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
