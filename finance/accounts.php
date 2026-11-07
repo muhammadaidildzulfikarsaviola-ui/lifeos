@@ -111,7 +111,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="finance-btn finance-btn-primary"
-                onclick="document.getElementById('modalAccount').classList.add('active');"
+                data-open-modal="modalAccount"
             >
                 <span>＋</span> Tambah akun
             </button>
@@ -254,7 +254,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                     <button
                         type="button"
                         class="finance-btn finance-btn-primary finance-btn-sm"
-                        onclick="document.getElementById('modalAccount').classList.add('active');"
+                        data-open-modal="modalAccount"
                     >
                         Tambah akun pertama
                     </button>
@@ -280,7 +280,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                 </span>
                             </div>
 
-                            <div style="margin: 14px 0 8px;">
+                            <div class="extracted-style-1">
                                 <div class="account-balance-label">Saldo Saat Ini</div>
                                 <div class="account-balance-val">
                                     <?= format_rupiah($acc['current_balance']) ?>
@@ -327,7 +327,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                     method="POST"
                                     action="<?= e(url('finance/accounts.php')) ?>"
                                     class="inline-form"
-                                    onsubmit="return confirm('Hapus akun ini secara permanen?');"
+                                    data-confirm="Hapus akun ini secara permanen?"
                                 >
                                     <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
                                     <input type="hidden" name="action" value="delete">
@@ -357,7 +357,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="modal-close-btn"
-                onclick="window.location.href = '<?= e(url('finance/accounts.php')) ?>';"
+                data-redirect="<?= e(url('finance/accounts.php')) ?>"
                 aria-label="Tutup"
             >
                 ✕
@@ -468,7 +468,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="finance-btn finance-btn-secondary"
-                    onclick="window.location.href = '<?= e(url('finance/accounts.php')) ?>';"
+                    data-redirect="<?= e(url('finance/accounts.php')) ?>"
                 >
                     Batal
                 </button>

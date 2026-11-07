@@ -1,0 +1,141 @@
+/* LIFEOS - SCHEDULE MODULE */
+
+.schedule-page {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    color: var(--ink);
+}
+
+.schedule-navigation {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+}
+
+.schedule-navigation a {
+    position: relative;
+    flex: 0 0 auto;
+    padding: 0 2px 12px;
+    color: #7b8390;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.schedule-navigation a:hover {
+    color: var(--ink);
+}
+
+.schedule-navigation a.active {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.schedule-navigation a.active::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary);
+}
+
+.schedule-section {
+    margin-bottom: 28px;
+}
+
+.schedule-section h2 {
+    margin: 0 0 14px;
+    font-family: Manrope, sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.schedule-empty-state {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.schedule-empty-state p {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.schedule-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.schedule-btn-primary {
+    color: #fff;
+    background: var(--primary);
+}
+
+.schedule-btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.schedule-alert {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+.event-list {
+    display: grid;
+    gap: 12px;
+    padding: 0;
+    list-style: none;
+}
+
+.event-item {
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.event-item h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+}
+
+.event-item p {
+    color: var(--muted-dark);
+    font-size: 12px;
+}
+
+.event-link {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+@media (max-width: 680px) {
+    .schedule-navigation {
+        gap: 20px;
+    }
+}

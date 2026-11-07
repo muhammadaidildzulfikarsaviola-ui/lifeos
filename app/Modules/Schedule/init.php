@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/bootstrap.php';
+require_once dirname(__DIR__, 3) . '/includes/bootstrap.php';
 require_once LIFEOS_ROOT . '/app/Modules/Schedule/ScheduleService.php';
 
 use App\Modules\Schedule\ScheduleService;
@@ -9,9 +9,6 @@ use App\Modules\Schedule\ScheduleService;
 $scheduleService = null;
 $dbError = null;
 
-/**
- * Execute the schedule schema if tables are missing.
- */
 function upgrade_schedule_schema(): ?string
 {
     $schemaPath = LIFEOS_ROOT . '/database/schedule_schema.sql';

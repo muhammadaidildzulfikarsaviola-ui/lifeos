@@ -122,7 +122,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="finance-btn finance-btn-primary"
-                onclick="document.getElementById('modalBudget').classList.add('active');"
+                data-open-modal="modalBudget"
             >
                 <span>＋</span> Buat anggaran
             </button>
@@ -169,7 +169,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <div class="budget-progress-bar-container h-10">
                     <div
                         class="budget-progress-bar <?= e($viewBudget['status_indicator']) ?>"
-                        style="width: <?= min(100, max(2, (int) $viewBudget['percentage'])) ?>%;"
+                        data-width="<?= min(100, max(2, (int) $viewBudget['percentage'])) ?>"
                     ></div>
                 </div>
                 <div class="budget-amounts-row text-sm">
@@ -214,7 +214,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                             <div class="budget-progress-bar-container flex-1 h-6 m-0">
                                                 <div
                                                     class="budget-progress-bar <?= $item['percentage'] >= 100 ? 'danger' : ($item['percentage'] >= 80 ? 'warning' : '') ?>"
-                                                    style="width: <?= min(100, max(2, (int) $item['percentage'])) ?>%;"
+                                                    data-width="<?= min(100, max(2, (int) $item['percentage'])) ?>"
                                                 ></div>
                                             </div>
                                             <span class="progress-pct-label"><?= e((string) $item['percentage']) ?>%</span>
@@ -247,7 +247,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                     <button
                         type="button"
                         class="finance-btn finance-btn-primary finance-btn-sm"
-                        onclick="document.getElementById('modalBudget').classList.add('active');"
+                        data-open-modal="modalBudget"
                     >
                         Buat anggaran baru
                     </button>
@@ -275,7 +275,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                         <div class="budget-progress-bar-container">
                             <div
                                 class="budget-progress-bar <?= e($b['status_indicator']) ?>"
-                                style="width: <?= min(100, max(2, (int) $b['percentage'])) ?>%;"
+                                data-width="<?= min(100, max(2, (int) $b['percentage'])) ?>"
                             ></div>
                         </div>
 
@@ -305,7 +305,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                 method="POST"
                                 action="<?= e(url('finance/budgets.php')) ?>"
                                 class="inline-form"
-                                onsubmit="return confirm('Hapus anggaran ini?');"
+                                data-confirm="Hapus anggaran ini?"
                             >
                                 <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
                                 <input type="hidden" name="action" value="delete">
@@ -334,7 +334,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="modal-close-btn"
-                onclick="window.location.href = '<?= e(url('finance/budgets.php')) ?>';"
+                data-redirect="<?= e(url('finance/budgets.php')) ?>"
                 aria-label="Tutup"
             >
                 ✕
@@ -366,7 +366,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                     <div class="form-row">
                         <div class="form-group">
                             <label for="b_period">Periode *</label>
-                            <select name="period" id="b_period" class="form-select" required onchange="adjustBudgetDates(this.value);">
+                            <select name="period" id="b_period" class="form-select" required data-adjust-budget-dates="1">
                                 <?php $curPeriod = $editingBudget['period'] ?? 'monthly'; ?>
                                 <option value="monthly" <?= $curPeriod === 'monthly' ? 'selected' : '' ?>>Bulanan (Monthly)</option>
                                 <option value="weekly" <?= $curPeriod === 'weekly' ? 'selected' : '' ?>>Mingguan (Weekly)</option>
@@ -469,7 +469,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="finance-btn finance-btn-secondary"
-                    onclick="window.location.href = '<?= e(url('finance/budgets.php')) ?>';"
+                    data-redirect="<?= e(url('finance/budgets.php')) ?>"
                 >
                     Batal
                 </button>
@@ -480,25 +480,5 @@ require LIFEOS_ROOT . '/includes/header.php';
         </form>
     </div>
 </div>
-
-<script>
-function adjustBudgetDates(period) {
-    const startInput = document.getElementById('b_start');
-    const endInput = document.getElementById('b_end');
-    const now = new Date();
-
-    if (period === 'monthly') {
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        startInput.value = firstDay.toISOString().split('T')[0];
-        endInput.value = lastDay.toISOString().split('T')[0];
-    } else if (period === 'yearly') {
-        const firstDay = new Date(now.getFullYear(), 0, 1);
-        const lastDay = new Date(now.getFullYear(), 11, 31);
-        startInput.value = firstDay.toISOString().split('T')[0];
-        endInput.value = lastDay.toISOString().split('T')[0];
-    }
-}
-</script>
 
 <?php require LIFEOS_ROOT . '/includes/footer.php'; ?>

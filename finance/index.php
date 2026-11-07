@@ -157,12 +157,12 @@ foreach ($chartData as $cd) {
                                 <div class="chart-bars-pair">
                                     <div
                                         class="chart-bar bar-income"
-                                        style="height: <?= (int) $incHeight ?>px;"
+                                        data-height="<?= (int) $incHeight ?>"
                                         title="Pemasukan: <?= e(format_rupiah($cd['income'])) ?>"
                                     ></div>
                                     <div
                                         class="chart-bar bar-expense"
-                                        style="height: <?= (int) $expHeight ?>px;"
+                                        data-height="<?= (int) $expHeight ?>"
                                         title="Pengeluaran: <?= e(format_rupiah($cd['expense'])) ?>"
                                     ></div>
                                 </div>
@@ -173,11 +173,11 @@ foreach ($chartData as $cd) {
 
                     <div class="chart-legend">
                         <div class="legend-item">
-                            <span class="legend-swatch" style="background: #467a57;"></span>
+                            <span class="legend-swatch extracted-style-15"></span>
                             <span>Pemasukan</span>
                         </div>
                         <div class="legend-item">
-                            <span class="legend-swatch" style="background: #a95252;"></span>
+                            <span class="legend-swatch extracted-style-16"></span>
                             <span>Pengeluaran</span>
                         </div>
                     </div>
@@ -334,8 +334,8 @@ foreach ($chartData as $cd) {
                 <div class="panel-table-wrap">
                     <?php foreach ($budgets as $b): ?>
                         <div class="budget-summary-item">
-                            <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                                <strong style="font-size: 13px;"><?= e($b['name']) ?></strong>
+                            <div class="extracted-style-17">
+                                <strong class="extracted-style-18"><?= e($b['name']) ?></strong>
                                 <span class="finance-badge badge-<?= e($b['status_indicator'] === 'normal' ? 'active' : ($b['status_indicator'] === 'warning' ? 'warning' : 'danger')) ?>">
                                     <?= e($b['status_label']) ?> (<?= e((string) $b['percentage']) ?>%)
                                 </span>
@@ -343,7 +343,7 @@ foreach ($chartData as $cd) {
                             <div class="budget-progress-bar-container">
                                 <div
                                     class="budget-progress-bar <?= e($b['status_indicator']) ?>"
-                                    style="width: <?= min(100, max(2, (int) $b['percentage'])) ?>%;"
+                                    data-width="<?= min(100, max(2, (int) $b['percentage'])) ?>"
                                 ></div>
                             </div>
                             <div class="budget-amounts-row">

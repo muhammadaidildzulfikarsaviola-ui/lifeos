@@ -102,7 +102,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="finance-btn finance-btn-primary"
-                onclick="document.getElementById('modalLoan').classList.add('active');"
+                data-open-modal="modalLoan"
             >
                 <span>＋</span> Catat pinjaman baru
             </button>
@@ -133,7 +133,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                         <button
                             type="button"
                             class="finance-btn finance-btn-primary finance-btn-sm"
-                            onclick="document.getElementById('modalPayment').classList.add('active');"
+                            data-open-modal="modalPayment"
                         >
                             ＋ Catat Pembayaran
                         </button>
@@ -203,7 +203,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                     <button
                         type="button"
                         class="finance-btn finance-btn-secondary finance-btn-sm"
-                        onclick="document.getElementById('modalPayment').classList.add('active');"
+                        data-open-modal="modalPayment"
                     >
                         Catat pembayaran pertama
                     </button>
@@ -267,7 +267,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                     <button
                         type="button"
                         class="finance-btn finance-btn-primary finance-btn-sm"
-                        onclick="document.getElementById('modalLoan').classList.add('active');"
+                        data-open-modal="modalLoan"
                     >
                         Catat pinjaman pertama
                     </button>
@@ -332,7 +332,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                 method="POST"
                                 action="<?= e(url('finance/loans.php')) ?>"
                                 class="inline-form"
-                                onsubmit="return confirm('Hapus catatan pinjaman ini?');"
+                                data-confirm="Hapus catatan pinjaman ini?"
                             >
                                 <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
                                 <input type="hidden" name="action" value="delete">
@@ -361,7 +361,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="modal-close-btn"
-                onclick="window.location.href = '<?= e(url('finance/loans.php')) ?>';"
+                data-redirect="<?= e(url('finance/loans.php')) ?>"
                 aria-label="Tutup"
             >
                 ✕
@@ -462,7 +462,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="finance-btn finance-btn-secondary"
-                    onclick="window.location.href = '<?= e(url('finance/loans.php')) ?>';"
+                    data-redirect="<?= e(url('finance/loans.php')) ?>"
                 >
                     Batal
                 </button>
@@ -483,7 +483,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="modal-close-btn"
-                    onclick="document.getElementById('modalPayment').classList.remove('active');"
+                    data-close-modal="modalPayment"
                     aria-label="Tutup"
                 >
                     ✕
@@ -504,7 +504,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                 class="form-control"
                                 value="<?= e($viewLoan['lender_name']) ?>"
                                 readonly
-                                style="background: #f8f9fa;"
+                                class="extracted-style-19"
                             >
                         </div>
 
@@ -584,7 +584,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                     <button
                         type="button"
                         class="finance-btn finance-btn-secondary"
-                        onclick="document.getElementById('modalPayment').classList.remove('active');"
+                        data-close-modal="modalPayment"
                     >
                         Batal
                     </button>

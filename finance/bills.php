@@ -96,7 +96,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="finance-btn finance-btn-primary"
-                onclick="document.getElementById('modalBill').classList.add('active');"
+                data-open-modal="modalBill"
             >
                 <span>＋</span> Tambah tagihan
             </button>
@@ -110,8 +110,8 @@ require LIFEOS_ROOT . '/includes/header.php';
     <?php render_finance_alerts($dbError); ?>
 
     <!-- Notice Box: Pure Reminder -->
-    <div style="background: #fafbfc; border: 1px solid #e5e9ec; border-radius: 9px; padding: 12px 16px; margin-bottom: 22px; font-size: 12px; color: #5a626d; display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 16px; color: #436453;">ℹ</span>
+    <div class="extracted-style-2">
+        <span class="extracted-style-3">ℹ</span>
         <span>
             <strong>Informasi Kebijakan Finansial:</strong> Tagihan berulang di LIFEOS berfungsi sebagai pengingat kalender. Saldo kas/bank Anda <strong>tidak pernah dipotong otomatis</strong>. Silakan catat pembayaran sebenarnya melalui menu Transaksi saat Anda telah membayarnya.
         </span>
@@ -134,7 +134,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="finance-btn finance-btn-primary finance-btn-sm"
-                    onclick="document.getElementById('modalBill').classList.add('active');"
+                    data-open-modal="modalBill"
                 >
                     Tambah pengingat tagihan
                 </button>
@@ -155,24 +155,24 @@ require LIFEOS_ROOT . '/includes/header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($bills as $b): ?>
-                            <tr style="<?= (int) $b['is_active'] === 0 ? 'opacity: 0.65; background: #fafafa;' : '' ?>">
+                            <tr class="<?= (int) $b['is_active'] === 0 ? 'bill-row-inactive' : '' ?>">
                                 <td>
-                                    <div style="font-weight: 700; color: #212529;"><?= e($b['name']) ?></div>
+                                    <div class="extracted-style-4"><?= e($b['name']) ?></div>
                                     <?php if (!empty($b['notes'])): ?>
-                                        <div style="font-size: 11px; color: #8a929e;"><?= e($b['notes']) ?></div>
+                                        <div class="extracted-style-5"><?= e($b['notes']) ?></div>
                                     <?php endif; ?>
                                 </td>
                                 <td>
                                     <?php if (!empty($b['category_name'])): ?>
-                                        <span class="finance-badge" style="background: #f1f4f3; color: #496353;">
+                                        <span class="finance-badge extracted-style-6">
                                             <?= e($b['category_name']) ?>
                                         </span>
                                     <?php else: ?>
-                                        <span style="color: #9ba1a9;">—</span>
+                                        <span class="extracted-style-7">—</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <span style="font-size: 11px; color: #495057; font-weight: 600;">
+                                    <span class="extracted-style-8">
                                         <?= e(ucfirst($b['frequency'])) ?>
                                     </span>
                                 </td>
@@ -180,7 +180,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                     <div><?= date('d M Y', strtotime($b['next_due_date'])) ?></div>
                                 </td>
                                 <td class="text-right">
-                                    <span class="tx-amount" style="color: #212529;">
+                                    <span class="tx-amount extracted-style-9">
                                         <?= format_rupiah($b['expected_amount']) ?>
                                     </span>
                                 </td>
@@ -193,7 +193,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                         </span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-right" style="white-space: nowrap;">
+                                <td class="text-right extracted-style-10">
                                     <?php if ((int) $b['is_active'] === 1): ?>
                                         <a
                                             href="<?= e(url('finance/transactions.php?action=create&description=' . urlencode('Bayar ' . $b['name']) . '&amount=' . urlencode((string) $b['expected_amount']) . '&category_id=' . urlencode((string) ($b['category_id'] ?? '')))) ?>"
@@ -211,7 +211,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                         Edit
                                     </a>
 
-                                    <form method="POST" action="<?= e(url('finance/bills.php')) ?>" style="display: inline-block;">
+                                    <form method="POST" action="<?= e(url('finance/bills.php')) ?>" class="extracted-style-11">
                                         <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
                                         <input type="hidden" name="action" value="toggle_active">
                                         <input type="hidden" name="id" value="<?= e((string) $b['id']) ?>">
@@ -228,8 +228,8 @@ require LIFEOS_ROOT . '/includes/header.php';
                                     <form
                                         method="POST"
                                         action="<?= e(url('finance/bills.php')) ?>"
-                                        style="display: inline-block;"
-                                        onsubmit="return confirm('Hapus pengingat tagihan ini?');"
+                                        class="extracted-style-12"
+                                        data-confirm="Hapus pengingat tagihan ini?"
                                     >
                                         <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
                                         <input type="hidden" name="action" value="delete">
@@ -260,7 +260,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="modal-close-btn"
-                onclick="window.location.href = '<?= e(url('finance/bills.php')) ?>';"
+                data-redirect="<?= e(url('finance/bills.php')) ?>"
                 aria-label="Tutup"
             >
                 ✕
@@ -372,7 +372,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                         ><?= e($editingBill['notes'] ?? '') ?></textarea>
                     </div>
 
-                    <div class="form-group" style="flex-direction: row; align-items: center; gap: 8px;">
+                    <div class="form-group extracted-style-13">
                         <input
                             type="checkbox"
                             name="is_active"
@@ -380,7 +380,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                             value="1"
                             <?= (!isset($editingBill) || (int) $editingBill['is_active'] === 1) ? 'checked' : '' ?>
                         >
-                        <label for="bill_active" style="margin: 0; font-weight: normal; cursor: pointer;">
+                        <label for="bill_active" class="extracted-style-14">
                             Pengingat Aktif (tampilkan di dashboard dan peringatan mendatang)
                         </label>
                     </div>
@@ -391,7 +391,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="finance-btn finance-btn-secondary"
-                    onclick="window.location.href = '<?= e(url('finance/bills.php')) ?>';"
+                    data-redirect="<?= e(url('finance/bills.php')) ?>"
                 >
                     Batal
                 </button>

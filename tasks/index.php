@@ -82,11 +82,11 @@ $tasks = $tasksService ? $tasksService->listTasks($filters) : [];
                             <td><?= e($task['due_date'] ?? '-') ?></td>
                             <td>
                                 <a href="<?= e(url('tasks/tasks.php?action=edit&id=' . $task['id'])) ?>" class="tasks-link">Ubah</a>
-                                <form method="post" action="<?= e(url('tasks/index.php')) ?>" style="display:inline;">
+                                <form method="post" action="<?= e(url('tasks/index.php')) ?>" class="extracted-style-1">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= e($task['id']) ?>">
                                     <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
-                                    <button type="submit" class="tasks-link tasks-delete" onclick="return confirm('Yakin hapus task?')">Hapus</button>
+                                    <button type="submit" class="tasks-link tasks-delete" data-confirm="Yakin hapus task?">Hapus</button>
                                 </form>
                             </td>
                         </tr>

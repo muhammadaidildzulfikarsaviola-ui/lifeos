@@ -22,6 +22,9 @@ $moduleCss = [
     'schedule' => 'schedule.css',
     'tasks' => 'tasks.css',
 ];
+$moduleJs = [
+    'finance' => 'finance.js',
+];
 
 $globalCss = url('assets/css/app.css');
 $moduleCssUrl = isset($moduleCss[$currentPage])
@@ -30,6 +33,7 @@ $moduleCssUrl = isset($moduleCss[$currentPage])
 
 $pageCss = $pageCss ?? null;
 $pageCssUrl = $pageCss !== null ? url('assets/css/' . ltrim($pageCss, '/')) : null;
+$moduleJsUrl = isset($moduleJs[$currentPage]) ? url('assets/js/modules/' . $moduleJs[$currentPage]) : null;
 ?>
 <!DOCTYPE html>
 <html lang="id">

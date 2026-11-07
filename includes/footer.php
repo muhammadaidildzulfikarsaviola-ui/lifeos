@@ -9,5 +9,8 @@
 </div>
 
 <script src="<?= e(url('assets/js/app.js')) ?>"></script>
+<?php if ($moduleJsUrl !== null): ?>
+    <script src="<?= e($moduleJsUrl) ?>"></script>
+<?php endif; ?>
 </body>
 </html>

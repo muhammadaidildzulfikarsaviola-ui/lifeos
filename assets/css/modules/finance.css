@@ -1427,3 +1427,25 @@
     font-family: Manrope, sans-serif;
 }
 
+
+/* Extracted presentation rules */
+.extracted-style-1 {margin: 14px 0 8px;}
+.extracted-style-2 {background: #fafbfc; border: 1px solid #e5e9ec; border-radius: 9px; padding: 12px 16px; margin-bottom: 22px; font-size: 12px; color: #5a626d; display: flex; align-items: center; gap: 10px;}
+.extracted-style-3 {font-size: 16px; color: #436453;}
+.extracted-style-4 {font-weight: 700; color: #212529;}
+.extracted-style-5 {font-size: 11px; color: #8a929e;}
+.extracted-style-6 {background: #f1f4f3; color: #496353;}
+.extracted-style-7 {color: #9ba1a9;}
+.extracted-style-8 {font-size: 11px; color: #495057; font-weight: 600;}
+.extracted-style-9 {color: #212529;}
+.extracted-style-10 {white-space: nowrap;}
+.extracted-style-11 {display: inline-block;}
+.extracted-style-12 {display: inline-block;}
+.extracted-style-13 {flex-direction: row; align-items: center; gap: 8px;}
+.extracted-style-14 {margin: 0; font-weight: normal; cursor: pointer;}
+.extracted-style-15 {background: #467a57;}
+.extracted-style-16 {background: #a95252;}
+.extracted-style-17 {display: flex; justify-content: space-between; align-items: baseline;}
+.extracted-style-18 {font-size: 13px;}
+.extracted-style-19 {background: #f8f9fa;}
+.extracted-style-20 {display: none;}

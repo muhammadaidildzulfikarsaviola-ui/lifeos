@@ -137,7 +137,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="finance-btn finance-btn-primary"
-                onclick="document.getElementById('modalTransaction').classList.add('active');"
+                data-open-modal="modalTransaction"
             >
                 <span>＋</span> Catat transaksi
             </button>
@@ -229,7 +229,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="finance-btn finance-btn-primary finance-btn-sm"
-                    onclick="document.getElementById('modalTransaction').classList.add('active');"
+                    data-open-modal="modalTransaction"
                 >
                     Catat transaksi baru
                 </button>
@@ -310,7 +310,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                         method="POST"
                                         action="<?= e(url('finance/transactions.php')) ?>"
                                         class="inline-form"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?');"
+                                        data-confirm="Apakah Anda yakin ingin menghapus transaksi ini?"
                                     >
                                         <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
                                         <input type="hidden" name="action" value="delete">
@@ -368,7 +368,7 @@ require LIFEOS_ROOT . '/includes/header.php';
             <button
                 type="button"
                 class="modal-close-btn"
-                onclick="window.location.href = '<?= e(url('finance/transactions.php')) ?>';"
+                data-redirect="<?= e(url('finance/transactions.php')) ?>"
                 aria-label="Tutup"
             >
                 ✕
@@ -392,7 +392,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                 id="tx_type"
                                 class="form-select"
                                 required
-                                onchange="handleTxTypeChange(this.value);"
+                                data-handle-tx-type="1"
                             >
                                 <?php $currentType = $editingTx['type'] ?? 'expense'; ?>
                                 <option value="expense" <?= $currentType === 'expense' ? 'selected' : '' ?>>Pengeluaran</option>
@@ -470,7 +470,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                             </select>
                         </div>
 
-                        <div class="form-group" id="group_target_account" style="display: none;">
+                        <div class="form-group" id="group_target_account" class="extracted-style-20">
                             <label for="tx_target_account">Akun Tujuan (Transfer) *</label>
                             <select name="target_account_id" id="tx_target_account" class="form-select">
                                 <option value="">-- Pilih Akun Tujuan --</option>
@@ -529,7 +529,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 <button
                     type="button"
                     class="finance-btn finance-btn-secondary"
-                    onclick="window.location.href = '<?= e(url('finance/transactions.php')) ?>';"
+                    data-redirect="<?= e(url('finance/transactions.php')) ?>"
                 >
                     Batal
                 </button>
@@ -540,45 +540,5 @@ require LIFEOS_ROOT . '/includes/header.php';
         </form>
     </div>
 </div>
-
-<script>
-function handleTxTypeChange(type) {
-    const groupTarget = document.getElementById('group_target_account');
-    const groupCategory = document.getElementById('group_category');
-    const targetAccountSelect = document.getElementById('tx_target_account');
-    const labelSource = document.getElementById('label_source_account');
-    const optExpense = document.getElementById('optgroup_expense');
-    const optIncome = document.getElementById('optgroup_income');
-
-    if (type === 'transfer') {
-        groupTarget.style.display = 'flex';
-        targetAccountSelect.required = true;
-        groupCategory.style.display = 'none';
-        labelSource.innerText = 'Akun Sumber *';
-    } else {
-        groupTarget.style.display = 'none';
-        targetAccountSelect.required = false;
-        groupCategory.style.display = 'flex';
-        
-        if (type === 'income') {
-            labelSource.innerText = 'Akun Penerima *';
-            optExpense.style.display = 'none';
-            optIncome.style.display = '';
-        } else {
-            labelSource.innerText = 'Akun Sumber *';
-            optExpense.style.display = '';
-            optIncome.style.display = 'none';
-        }
-    }
-}
-
-// Inisialisasi saat load
-document.addEventListener('DOMContentLoaded', function() {
-    const typeSelect = document.getElementById('tx_type');
-    if (typeSelect) {
-        handleTxTypeChange(typeSelect.value);
-    }
-});
-</script>
 
 <?php require LIFEOS_ROOT . '/includes/footer.php'; ?>

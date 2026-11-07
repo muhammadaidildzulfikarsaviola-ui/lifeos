@@ -1,18 +1,16 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/init.php';
+require_once dirname(__DIR__) . '/app/Modules/Schedule/init.php';
 
 $pageTitle = 'Schedule · Ringkasan';
 $currentPage = 'schedule';
 
 require LIFEOS_ROOT . '/includes/header.php';
 
-// Fetch events for overview (e.g., next 7 days)
 $events = [];
 if ($scheduleService !== null && $dbError === null) {
     try {
-        // Simple filter: upcoming events from today
         $today = date('Y-m-d');
         $events = $scheduleService->listEvents(['date' => $today]);
     } catch (Throwable $e) {
