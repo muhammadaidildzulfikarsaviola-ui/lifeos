@@ -120,3 +120,6 @@ run-lifeos.bat
 
 # Windows shortcuts
 *.lnk
+
+/database
+
