@@ -6,7 +6,6 @@ require_once __DIR__ . '/init.php';
 $pageTitle = 'Finance · Pinjaman Pribadi';
 $currentPage = 'finance';
 
-// Handle POST actions (Save Loan, Record Payment, Soft Delete)
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     verify_csrf();
 
@@ -60,11 +59,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 }
 
-// Data fetching
 $loans = [];
 $accounts = [];
-$activeAction = $_GET['action'] ?? '';
-$loanId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$activeAction = request_string($_GET['action'] ?? '');
+$loanId = max(0, request_integer($_GET['id'] ?? 0));
 $editingLoan = null;
 $viewLoan = null;
 
@@ -88,7 +86,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 <div class="finance-page">
 
-    <!-- Page Heading -->
+
     <section class="finance-heading">
         <div>
             <p class="eyebrow">MONEY MANAGEMENT</p>
@@ -109,13 +107,13 @@ require LIFEOS_ROOT . '/includes/header.php';
         </div>
     </section>
 
-    <!-- Navigation -->
+
     <?php render_finance_nav('loans'); ?>
 
-    <!-- Alerts -->
+
     <?php render_finance_alerts($dbError); ?>
 
-    <!-- View Loan Details & Payments History -->
+
     <?php if ($viewLoan !== null): ?>
         <article class="finance-panel finance-detail-panel">
             <div class="finance-panel-heading">
@@ -150,7 +148,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- Stats Grid -->
+
             <div class="finance-stats-grid">
                 <div class="loan-stat-item">
                     <span class="loan-stat-label">Pokok Awal Pinjaman</span>
@@ -187,7 +185,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- Payment History Table -->
+
             <div class="budget-status-row my-3">
                 <h3 class="section-subtitle m-0">
                     Riwayat Pembayaran Cicilan
@@ -249,7 +247,7 @@ require LIFEOS_ROOT . '/includes/header.php';
         </article>
     <?php endif; ?>
 
-    <!-- Loans Grid / List -->
+
     <section class="finance-section">
         <div class="finance-section-heading">
             <div>
@@ -350,7 +348,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 </div>
 
-<!-- Modal Tambah / Edit Pinjaman -->
+
 <div
     class="finance-modal-backdrop <?= ($activeAction === 'create' || $editingLoan !== null) ? 'active' : '' ?>"
     id="modalLoan"
@@ -474,7 +472,7 @@ require LIFEOS_ROOT . '/includes/header.php';
     </div>
 </div>
 
-<!-- Modal Catat Pembayaran Pinjaman -->
+
 <?php if ($viewLoan !== null): ?>
     <div class="finance-modal-backdrop" id="modalPayment">
         <div class="finance-modal">

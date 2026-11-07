@@ -59,7 +59,7 @@ class ScheduleService
             'SELECT e.*, c.name AS category_name, c.color AS category_color, t.title AS task_title
              FROM schedule_events e
              LEFT JOIN schedule_categories c ON c.id = e.category_id
-             LEFT JOIN tasks t ON t.id = e.task_id
+             LEFT JOIN tasks t ON t.id = e.task_id AND t.deleted_at IS NULL
              WHERE e.deleted_at IS NULL AND e.start_date <= :range_end
              AND (e.end_date >= :range_start OR (e.recurrence <> \'none\' AND (e.recurrence_until IS NULL OR e.recurrence_until >= :recurrence_start)))
              ORDER BY e.all_day DESC, e.start_time, e.title'
@@ -116,7 +116,7 @@ class ScheduleService
     public function getEvent(int $id): ?array
     {
         try {
-            $stmt = $this->db->prepare('SELECT e.*, c.name AS category_name, t.title AS task_title FROM schedule_events e LEFT JOIN schedule_categories c ON c.id=e.category_id LEFT JOIN tasks t ON t.id=e.task_id WHERE e.id=:id AND e.deleted_at IS NULL');
+            $stmt = $this->db->prepare('SELECT e.*, c.name AS category_name, t.title AS task_title FROM schedule_events e LEFT JOIN schedule_categories c ON c.id=e.category_id LEFT JOIN tasks t ON t.id=e.task_id AND t.deleted_at IS NULL WHERE e.id=:id AND e.deleted_at IS NULL');
             $stmt->execute(['id'=>$id]);
         } catch (\PDOException) {
             $stmt = $this->db->prepare('SELECT e.*, c.name AS category_name, NULL AS task_title FROM schedule_events e LEFT JOIN schedule_categories c ON c.id=e.category_id WHERE e.id=:id AND e.deleted_at IS NULL');
@@ -210,7 +210,16 @@ class ScheduleService
         if (!$force && $lastSync && strtotime((string)$lastSync) > strtotime('-7 days')) return 0;
         $url = 'https://date.nager.at/api/v3/PublicHolidays/' . $year . '/ID';
         $context = stream_context_create(['http' => ['timeout' => 4, 'header' => "User-Agent: LIFEOS-local-calendar\r\n"]]);
-        $json = @file_get_contents($url, false, $context);
+        set_error_handler(static function (int $severity, string $message): never {
+            throw new RuntimeException($message);
+        });
+        try {
+            $json = file_get_contents($url, false, $context);
+        } catch (\Throwable $e) {
+            throw new RuntimeException('Sumber hari libur Nager.Date tidak dapat dihubungi. Hari libur tersimpan tetap ditampilkan.', 0, $e);
+        } finally {
+            restore_error_handler();
+        }
         if ($json === false) throw new RuntimeException('Sumber hari libur Nager.Date tidak dapat dihubungi. Hari libur tersimpan tetap ditampilkan.');
         $holidays = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         if (!is_array($holidays)) throw new RuntimeException('Format data hari libur tidak valid.');

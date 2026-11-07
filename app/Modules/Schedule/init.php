@@ -26,6 +26,24 @@ $navigation = [
     ['slug' => 'shifts', 'label' => 'Shift kerja', 'path' => 'shifts.php'],
 ];
 
+function schedule_query_date(mixed $value, ?string $fallback = null): string
+{
+    $fallback ??= date('Y-m-d');
+    if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+        return $fallback;
+    }
+
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+    $errors = DateTimeImmutable::getLastErrors();
+    if ($date === false
+        || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))
+        || $date->format('Y-m-d') !== $value) {
+        return $fallback;
+    }
+
+    return $value;
+}
+
 function render_schedule_alerts(?string $dbError = null): void
 {
     $flash = get_flash();

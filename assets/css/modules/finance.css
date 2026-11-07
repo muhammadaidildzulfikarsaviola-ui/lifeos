@@ -1,7 +1,4 @@
-/* =========================================
-   LIFEOS - FINANCE MODULE STYLES
-   Editorial Productivity Design System
-========================================= */
+
 
 .finance-page {
     width: 100%;
@@ -10,7 +7,7 @@
     color: var(--ink);
 }
 
-/* Headings & Header Actions */
+
 .finance-heading {
     display: flex;
     align-items: center;
@@ -42,7 +39,7 @@
     flex-wrap: wrap;
 }
 
-/* Buttons */
+
 .finance-btn {
     display: inline-flex;
     align-items: center;
@@ -102,7 +99,7 @@
     border-radius: 6px;
 }
 
-/* Navigation */
+
 .finance-navigation {
     display: flex;
     align-items: center;
@@ -144,7 +141,7 @@
     content: "";
 }
 
-/* Alerts */
+
 .finance-alert {
     display: flex;
     align-items: flex-start;
@@ -192,7 +189,7 @@
     border-color: #d1dfec;
 }
 
-/* Section & Panels */
+
 .finance-section {
     margin-bottom: 28px;
 }
@@ -231,7 +228,7 @@
     font-weight: 600;
 }
 
-/* Summary Grid */
+
 .finance-summary-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -302,7 +299,7 @@
     font-size: 11px;
 }
 
-/* Panels */
+
 .finance-panel {
     min-width: 0;
     padding: 18px 20px;
@@ -344,7 +341,7 @@
     text-decoration: underline;
 }
 
-/* Empty State */
+
 .finance-empty-state {
     min-height: 175px;
     display: flex;
@@ -387,7 +384,7 @@
     padding: 20px 10px;
 }
 
-/* Table Styles */
+
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -455,7 +452,7 @@
     color: #556270;
 }
 
-/* Badges */
+
 .finance-badge {
     display: inline-flex;
     align-items: center;
@@ -518,7 +515,7 @@
     color: #a73535;
 }
 
-/* Filter Bar */
+
 .finance-filter-bar {
     display: flex;
     flex-wrap: wrap;
@@ -555,7 +552,7 @@
     min-width: 180px;
 }
 
-/* Forms & Modals */
+
 .finance-modal-backdrop {
     display: none;
     position: fixed;
@@ -634,7 +631,7 @@
     border-bottom-right-radius: 12px;
 }
 
-/* Form Controls */
+
 .finance-form {
     display: grid;
     gap: 16px;
@@ -693,7 +690,7 @@
     color: #8b929e;
 }
 
-/* Account Cards Grid */
+
 .accounts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -773,7 +770,7 @@
     margin-top: 14px;
 }
 
-/* Budget Progress & Bars */
+
 .budgets-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -805,17 +802,39 @@
 }
 
 .budget-progress-bar {
+    display: block;
+    width: 100%;
     height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    appearance: none;
+    background: #edf0f2;
+}
+
+.budget-progress-bar::-webkit-progress-bar {
+    border-radius: 999px;
+    background: #edf0f2;
+}
+
+.budget-progress-bar::-webkit-progress-value {
     border-radius: 999px;
     background: #3c7a52;
     transition: width 0.3s ease;
 }
 
-.budget-progress-bar.warning {
+.budget-progress-bar::-moz-progress-bar {
+    border-radius: 999px;
+    background: #3c7a52;
+}
+
+.budget-progress-bar.warning::-webkit-progress-value,
+.budget-progress-bar.warning::-moz-progress-bar {
     background: #c8891f;
 }
 
-.budget-progress-bar.danger {
+.budget-progress-bar.danger::-webkit-progress-value,
+.budget-progress-bar.danger::-moz-progress-bar {
     background: #c43838;
 }
 
@@ -827,7 +846,7 @@
     margin-bottom: 12px;
 }
 
-/* Loan Cards */
+
 .loans-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -858,7 +877,7 @@
     padding: 3px 0;
 }
 
-/* Cash Flow Chart - Lightweight SVG / CSS Grid */
+
 .chart-container {
     width: 100%;
     padding: 16px 4px 8px;
@@ -895,17 +914,30 @@
 }
 
 .chart-bar {
+    display: block;
     width: 18px;
-    min-height: 3px;
+    height: 130px;
+    margin: 0;
+    border: 0;
     border-radius: 4px 4px 0 0;
+    appearance: none;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    background: transparent;
     transition: opacity 0.15s ease;
 }
 
-.chart-bar.bar-income {
+.chart-bar::-webkit-progress-bar {
+    background: transparent;
+}
+
+.chart-bar.bar-income::-webkit-progress-value,
+.chart-bar.bar-income::-moz-progress-bar {
     background: #467a57;
 }
 
-.chart-bar.bar-expense {
+.chart-bar.bar-expense::-webkit-progress-value,
+.chart-bar.bar-expense::-moz-progress-bar {
     background: #a95252;
 }
 
@@ -942,7 +974,7 @@
     border-radius: 3px;
 }
 
-/* Pagination */
+
 .finance-pagination {
     display: flex;
     align-items: center;
@@ -958,7 +990,7 @@
     gap: 6px;
 }
 
-/* Responsive Breakpoints */
+
 @media (max-width: 1050px) {
     .finance-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1020,9 +1052,7 @@
 }
 
 
-/* ==============================================================================
-   REUSABLE REFACTORED COMPONENT & UTILITY CLASSES (NO INLINE STYLES)
-============================================================================== */
+
 
 .finance-stats-grid {
     display: grid;
@@ -1275,7 +1305,7 @@
     border-bottom: 1px solid #f1f3f5;
 }
 
-/* Detail & Card Enhancements */
+
 .budget-status-row {
     display: flex;
     justify-content: space-between;
@@ -1428,7 +1458,7 @@
 }
 
 
-/* Extracted presentation rules */
+
 .extracted-style-1 {margin: 14px 0 8px;}
 .extracted-style-2 {background: #fafbfc; border: 1px solid #e5e9ec; border-radius: 9px; padding: 12px 16px; margin-bottom: 22px; font-size: 12px; color: #5a626d; display: flex; align-items: center; gap: 10px;}
 .extracted-style-3 {font-size: 16px; color: #436453;}

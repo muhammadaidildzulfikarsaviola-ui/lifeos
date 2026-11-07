@@ -3,13 +3,16 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/app/Modules/Schedule/init.php';
 $pageTitle = 'Schedule · Event';
 $currentPage = 'schedule';
-$action = (string)($_GET['action'] ?? '');
-$id = (int)($_GET['id'] ?? 0);
+$requestedAction = $_GET['action'] ?? '';
+$action = is_string($requestedAction) ? $requestedAction : '';
+$requestedId = $_GET['id'] ?? 0;
+$id = is_scalar($requestedId) ? max(0, (int)$requestedId) : 0;
+$defaultEventDate = schedule_query_date($_GET['date'] ?? null);
 $event = $id > 0 && $scheduleService ? $scheduleService->getEvent($id) : null;
 $error = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $scheduleService && !$dbError) {
     verify_csrf();
-    $postAction = $_POST['action'] ?? '';
+    $postAction = request_string($_POST['action'] ?? '');
     try {
         if ($postAction === 'sync_holidays') {
             $count = $scheduleService->syncHolidays((int)($_POST['year'] ?? date('Y')), true);
@@ -23,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $scheduleService && !$dbError) {
             $scheduleService->softDeleteEvent((int)($_POST['id'] ?? 0));
             set_flash('success', 'Event dihapus dari kalender.');
             redirect(url('schedule/index.php'));
-        } else {
+        } elseif (in_array($postAction, ['create', 'update'], true)) {
             $data = [
                 'title'=>$_POST['title'] ?? '', 'description'=>$_POST['description'] ?? '',
                 'start_date'=>$_POST['start_date'] ?? '', 'start_time'=>$_POST['start_time'] ?? '',
@@ -41,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $scheduleService && !$dbError) {
                 set_flash('success', 'Event berhasil dibuat.');
             }
             redirect(url('schedule/index.php?date=' . rawurlencode((string)$data['start_date'])));
+        } else {
+            http_response_code(400);
+            $error = 'Tindakan Schedule tidak dikenali.';
         }
     } catch (Throwable $e) { $error = $e->getMessage(); }
 }
@@ -49,7 +55,7 @@ $showDetail = !$editing && $event !== null;
 if ($action === 'edit' && !$event && $error === null) $error = 'Event tidak ditemukan.';
 $categories = $scheduleService && !$dbError ? $scheduleService->listCategories() : [];
 $tasks = $scheduleService && !$dbError ? $scheduleService->listTasks() : [];
-$values = $event ?? ['title'=>'','description'=>'','start_date'=>$_GET['date'] ?? date('Y-m-d'),'start_time'=>'09:00:00','end_date'=>$_GET['date'] ?? date('Y-m-d'),'end_time'=>'10:00:00','all_day'=>0,'category_id'=>null,'status'=>'upcoming','recurrence'=>'none','recurrence_until'=>null,'reminder_minutes'=>null,'task_id'=>null];
+$values = $event ?? ['title'=>'','description'=>'','start_date'=>$defaultEventDate,'start_time'=>'09:00:00','end_date'=>$defaultEventDate,'end_time'=>'10:00:00','all_day'=>0,'category_id'=>null,'status'=>'upcoming','recurrence'=>'none','recurrence_until'=>null,'reminder_minutes'=>null,'task_id'=>null];
 $readEvents = !$editing && $scheduleService && !$dbError ? $scheduleService->listEvents(['start'=>date('Y-m-d', strtotime('-30 days')), 'end'=>date('Y-m-d', strtotime('+365 days'))]) : [];
 require LIFEOS_ROOT . '/includes/header.php';
 ?>
@@ -78,7 +84,7 @@ require LIFEOS_ROOT . '/includes/header.php';
         </form>
     <?php elseif ($showDetail): ?>
         <header class="schedule-heading"><div><p class="eyebrow">DETAIL AGENDA</p><h1><?= e($event['title']) ?></h1><p class="schedule-subtitle"><?= e($event['description'] ?? '') ?></p></div><div class="schedule-row-actions"><a class="schedule-btn schedule-btn-secondary" href="<?= e(url('schedule/events.php?action=edit&id=' . $event['id'])) ?>">Ubah</a><a class="schedule-btn schedule-btn-secondary" href="<?= e(url('schedule/index.php?date=' . rawurlencode($event['start_date']))) ?>">Kalender</a></div></header>
-        <article class="schedule-detail-card"><dl><dt>Status</dt><dd><?= e(['upcoming'=>'Akan datang','completed'=>'Selesai','cancelled'=>'Dibatalkan'][$event['status']] ?? $event['status']) ?></dd><dt>Waktu</dt><dd><?= e($event['start_date']) ?><?= !$event['all_day'] ? ' · ' . e(substr((string)$event['start_time'],0,5)) . '–' . e(substr((string)$event['end_time'],0,5)) : ' · Sepanjang hari' ?></dd><dt>Kategori</dt><dd><?= e($event['category_name'] ?? 'Tanpa kategori') ?></dd><dt>Pengulangan</dt><dd><?= e(['none'=>'Tidak berulang','daily'=>'Harian','weekly'=>'Mingguan','monthly'=>'Bulanan','yearly'=>'Tahunan'][$event['recurrence']] ?? $event['recurrence']) ?><?= !empty($event['recurrence_until']) ? ' sampai ' . e($event['recurrence_until']) : '' ?></dd><dt>Pengingat</dt><dd><?= $event['reminder_minutes'] === null ? 'Tidak aktif' : e((string)$event['reminder_minutes']) . ' menit sebelum event' ?></dd><dt>Task terkait</dt><dd><?= !empty($event['task_id']) ? e($event['task_title'] ?? 'Task ID ' . $event['task_id']) . ' · <a href="' . e(url('tasks/index.php')) . '">Buka Tasks</a>' : 'Tidak ada' ?></dd></dl><form method="post" action="<?= e(url('schedule/events.php')) ?>" data-confirm="Hapus event ini?"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int)$event['id'] ?>"><button class="schedule-btn schedule-btn-danger" type="submit">Hapus event</button></form></article>
+        <article class="schedule-detail-card"><dl><dt>Status</dt><dd><?= e(['upcoming'=>'Akan datang','completed'=>'Selesai','cancelled'=>'Dibatalkan'][$event['status']] ?? $event['status']) ?></dd><dt>Waktu</dt><dd><?= e($event['start_date']) ?><?= !$event['all_day'] ? ' · ' . e(substr((string)$event['start_time'],0,5)) . '–' . e(substr((string)$event['end_time'],0,5)) : ' · Sepanjang hari' ?></dd><dt>Kategori</dt><dd><?= e($event['category_name'] ?? 'Tanpa kategori') ?></dd><dt>Pengulangan</dt><dd><?= e(['none'=>'Tidak berulang','daily'=>'Harian','weekly'=>'Mingguan','monthly'=>'Bulanan','yearly'=>'Tahunan'][$event['recurrence']] ?? $event['recurrence']) ?><?= !empty($event['recurrence_until']) ? ' sampai ' . e($event['recurrence_until']) : '' ?></dd><dt>Pengingat</dt><dd><?= $event['reminder_minutes'] === null ? 'Tidak aktif' : e((string)$event['reminder_minutes']) . ' menit sebelum event' ?></dd><dt>Task terkait</dt><dd><?php if (!empty($event['task_id']) && !empty($event['task_title'])): ?><?= e($event['task_title']) ?> · <a href="<?= e(url('tasks/index.php?action=view&id=' . (int)$event['task_id'])) ?>">Buka Tasks</a><?php elseif (!empty($event['task_id'])): ?>Task terkait tidak tersedia<?php else: ?>Tidak ada<?php endif; ?></dd></dl><form method="post" action="<?= e(url('schedule/events.php')) ?>" data-confirm="Hapus event ini?"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int)$event['id'] ?>"><button class="schedule-btn schedule-btn-danger" type="submit">Hapus event</button></form></article>
     <?php else: ?>
         <header class="schedule-heading"><div><p class="eyebrow">AGENDA</p><h1>Event</h1><p class="schedule-subtitle">Kelola agenda dan lihat keterkaitan dengan task.</p></div><a class="schedule-btn schedule-btn-primary" href="<?= e(url('schedule/events.php?action=create')) ?>">＋ Tambah event</a></header>
         <div class="schedule-event-list">

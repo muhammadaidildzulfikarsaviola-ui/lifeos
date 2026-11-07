@@ -6,7 +6,6 @@ require_once __DIR__ . '/init.php';
 $pageTitle = 'Finance · Tagihan & Pengingat';
 $currentPage = 'finance';
 
-// Handle POST actions
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     verify_csrf();
 
@@ -55,12 +54,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 }
 
-// Data fetching
 $bills = [];
 $expenseCategories = [];
 $accounts = [];
-$activeAction = $_GET['action'] ?? '';
-$billId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$activeAction = request_string($_GET['action'] ?? '');
+$billId = max(0, request_integer($_GET['id'] ?? 0));
 $editingBill = null;
 
 if ($financeService !== null && $dbError === null) {
@@ -82,7 +80,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 <div class="finance-page">
 
-    <!-- Page Heading -->
+
     <section class="finance-heading">
         <div>
             <p class="eyebrow">MONEY MANAGEMENT</p>
@@ -103,13 +101,13 @@ require LIFEOS_ROOT . '/includes/header.php';
         </div>
     </section>
 
-    <!-- Navigation -->
+
     <?php render_finance_nav('bills'); ?>
 
-    <!-- Alerts -->
+
     <?php render_finance_alerts($dbError); ?>
 
-    <!-- Notice Box: Pure Reminder -->
+
     <div class="extracted-style-2">
         <span class="extracted-style-3">ℹ</span>
         <span>
@@ -117,7 +115,7 @@ require LIFEOS_ROOT . '/includes/header.php';
         </span>
     </div>
 
-    <!-- Bills List Panel -->
+
     <article class="finance-panel">
         <div class="finance-panel-heading">
             <div>
@@ -249,7 +247,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 </div>
 
-<!-- Modal Tambah / Edit Tagihan -->
+
 <div
     class="finance-modal-backdrop <?= ($activeAction === 'create' || $editingBill !== null) ? 'active' : '' ?>"
     id="modalBill"

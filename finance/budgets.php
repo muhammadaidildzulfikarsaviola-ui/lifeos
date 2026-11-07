@@ -6,7 +6,6 @@ require_once __DIR__ . '/init.php';
 $pageTitle = 'Finance · Anggaran';
 $currentPage = 'finance';
 
-// Handle POST actions
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     verify_csrf();
 
@@ -23,7 +22,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $startDate = $_POST['start_date'] ?? '';
             $endDate = $_POST['end_date'] ?? '';
 
-            // Otomatisasi rentang tanggal jika period dipilih namun tanggal kosong
             if ($startDate === '' || $endDate === '') {
                 if ($period === 'monthly') {
                     $startDate = date('Y-m-01');
@@ -80,11 +78,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 }
 
-// Data fetching
 $budgets = [];
 $expenseCategories = [];
-$activeAction = $_GET['action'] ?? '';
-$budgetId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$activeAction = request_string($_GET['action'] ?? '');
+$budgetId = max(0, request_integer($_GET['id'] ?? 0));
 $editingBudget = null;
 $viewBudget = null;
 
@@ -108,7 +105,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 <div class="finance-page">
 
-    <!-- Page Heading -->
+
     <section class="finance-heading">
         <div>
             <p class="eyebrow">MONEY MANAGEMENT</p>
@@ -129,13 +126,13 @@ require LIFEOS_ROOT . '/includes/header.php';
         </div>
     </section>
 
-    <!-- Navigation -->
+
     <?php render_finance_nav('budgets'); ?>
 
-    <!-- Alerts -->
+
     <?php render_finance_alerts($dbError); ?>
 
-    <!-- View Budget Details -->
+
     <?php if ($viewBudget !== null): ?>
         <article class="finance-panel finance-detail-panel">
             <div class="finance-panel-heading">
@@ -167,10 +164,12 @@ require LIFEOS_ROOT . '/includes/header.php';
                     </span>
                 </div>
                 <div class="budget-progress-bar-container h-10">
-                    <div
+                    <progress
                         class="budget-progress-bar <?= e($viewBudget['status_indicator']) ?>"
-                        data-width="<?= min(100, max(2, (int) $viewBudget['percentage'])) ?>"
-                    ></div>
+                        max="100"
+                        value="<?= min(100, max(2, (int) $viewBudget['percentage'])) ?>"
+                        aria-label="Pemakaian anggaran <?= e($viewBudget['name']) ?>"
+                    ></progress>
                 </div>
                 <div class="budget-amounts-row text-sm">
                     <span>Realisasi Pengeluaran: <strong><?= format_rupiah($viewBudget['total_spent']) ?></strong></span>
@@ -212,10 +211,12 @@ require LIFEOS_ROOT . '/includes/header.php';
                                     <td>
                                         <div class="progress-wrapper">
                                             <div class="budget-progress-bar-container flex-1 h-6 m-0">
-                                                <div
+                                                <progress
                                                     class="budget-progress-bar <?= $item['percentage'] >= 100 ? 'danger' : ($item['percentage'] >= 80 ? 'warning' : '') ?>"
-                                                    data-width="<?= min(100, max(2, (int) $item['percentage'])) ?>"
-                                                ></div>
+                                                    max="100"
+                                                    value="<?= min(100, max(2, (int) $item['percentage'])) ?>"
+                                                    aria-label="Pemakaian <?= e($item['category_name']) ?>"
+                                                ></progress>
                                             </div>
                                             <span class="progress-pct-label"><?= e((string) $item['percentage']) ?>%</span>
                                         </div>
@@ -229,7 +230,7 @@ require LIFEOS_ROOT . '/includes/header.php';
         </article>
     <?php endif; ?>
 
-    <!-- Budgets List Grid -->
+
     <section class="finance-section">
         <div class="finance-section-heading">
             <div>
@@ -273,10 +274,12 @@ require LIFEOS_ROOT . '/includes/header.php';
                         </div>
 
                         <div class="budget-progress-bar-container">
-                            <div
-                                class="budget-progress-bar <?= e($b['status_indicator']) ?>"
-                                data-width="<?= min(100, max(2, (int) $b['percentage'])) ?>"
-                            ></div>
+                                <progress
+                                    class="budget-progress-bar <?= e($b['status_indicator']) ?>"
+                                    max="100"
+                                    value="<?= min(100, max(2, (int) $b['percentage'])) ?>"
+                                    aria-label="Pemakaian anggaran <?= e($b['name']) ?>"
+                                ></progress>
                         </div>
 
                         <div class="budget-amounts-row">
@@ -323,7 +326,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 </div>
 
-<!-- Modal Tambah / Edit Anggaran -->
+
 <div
     class="finance-modal-backdrop <?= ($activeAction === 'create' || $editingBudget !== null) ? 'active' : '' ?>"
     id="modalBudget"
@@ -418,7 +421,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                         </div>
                     </div>
 
-                    <!-- Category Allocation Section -->
+
                     <div class="form-group">
                         <label>Alokasi per Kategori Pengeluaran (Opsional)</label>
                         <p class="form-hint mb-2">

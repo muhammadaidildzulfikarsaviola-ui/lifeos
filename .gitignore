@@ -122,4 +122,4 @@ run-lifeos.bat
 *.lnk
 
 /database
-
+/backup

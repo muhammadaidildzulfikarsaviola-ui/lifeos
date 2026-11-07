@@ -18,14 +18,13 @@ function run_mysql_schema(string $schemaPath): ?string
         return "File schema tidak ditemukan: $schemaPath";
     }
 
-    $pdo = db(); // MySQL PDO from config/database.php
+    $pdo = db();
     $sql = file_get_contents($schemaPath);
     if ($sql === false) {
         return "Tidak dapat membaca file schema: $schemaPath";
     }
 
     try {
-        // exec will run all statements; on first error PDOException is thrown.
         $pdo->exec($sql);
     } catch (Throwable $e) {
         return "Migration error: " . $e->getMessage();

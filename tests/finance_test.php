@@ -17,7 +17,6 @@ class FinanceTestRunner
 
     public function __construct()
     {
-        // Gunakan SQLite in-memory untuk pengujian logika finansial
         $this->db = new PDO('sqlite::memory:', null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -188,6 +187,7 @@ class FinanceTestRunner
         $this->testIncomeTransaction();
         $this->testExpenseTransaction();
         $this->testTransferIntegrity();
+        $this->testTransactionSearchAndAccountFilters();
         $this->testTransactionEditAndNoMovementDuplication();
         $this->testSoftDeleteExclusion();
         $this->testBudgetSpendingCalculation();
@@ -275,10 +275,9 @@ class FinanceTestRunner
         $this->assert($txId > 0, "Catat Pemasukan Gaji Rp 10.000.000 ke BCA");
 
         $bcaAfter = $this->service->getAccountById($bcaId);
-        $expectedBalance = 5000000.00 + 10000000.00; // 15.000.000
+        $expectedBalance = 5000000.00 + 10000000.00;
         $this->assert((float) $bcaAfter['current_balance'] === $expectedBalance, "Pemasukan menambah saldo BCA menjadi " . format_rupiah($bcaAfter['current_balance']));
 
-        // Cek ledger lines
         $stmt = $this->db->prepare("SELECT * FROM transaction_lines WHERE transaction_id = ?");
         $stmt->execute([$txId]);
         $lines = $stmt->fetchAll();
@@ -306,10 +305,9 @@ class FinanceTestRunner
         $this->assert($txId > 0, "Catat Pengeluaran Rp 200.000 dari Dompet Tunai");
 
         $tunaiAfter = $this->service->getAccountById($tunaiId);
-        $expected = 500000.00 - 200000.00; // 300.000
+        $expected = 500000.00 - 200000.00;
         $this->assert((float) $tunaiAfter['current_balance'] === $expected, "Pengeluaran mengurangi saldo Tunai menjadi " . format_rupiah($tunaiAfter['current_balance']));
 
-        // Cek ledger lines
         $stmt = $this->db->prepare("SELECT * FROM transaction_lines WHERE transaction_id = ?");
         $stmt->execute([$txId]);
         $lines = $stmt->fetchAll();
@@ -322,8 +320,8 @@ class FinanceTestRunner
 
         $bca = $this->getAccountByName('Rekening BCA');
         $tunai = $this->getAccountByName('Dompet Tunai');
-        $bcaInitial = (float) $bca['current_balance']; // 15.000.000
-        $tunaiInitial = (float) $tunai['current_balance']; // 300.000
+        $bcaInitial = (float) $bca['current_balance'];
+        $tunaiInitial = (float) $tunai['current_balance'];
 
         $transferAmount = 1000000.00;
 
@@ -344,7 +342,6 @@ class FinanceTestRunner
         $this->assert((float) $bcaAfter['current_balance'] === $bcaInitial - $transferAmount, "Saldo BCA berkurang: " . format_rupiah($bcaAfter['current_balance']));
         $this->assert((float) $tunaiAfter['current_balance'] === $tunaiInitial + $transferAmount, "Saldo Tunai bertambah: " . format_rupiah($tunaiAfter['current_balance']));
 
-        // Cek bahwa transfer menghasilkan 2 ledger movements
         $stmt = $this->db->prepare("SELECT * FROM transaction_lines WHERE transaction_id = ? ORDER BY direction ASC");
         $stmt->execute([$txId]);
         $lines = $stmt->fetchAll();
@@ -352,7 +349,6 @@ class FinanceTestRunner
         $this->assert($lines[0]['direction'] === 'in' && (int) $lines[0]['account_id'] === (int) $tunai['id'], "Line masuk ke akun target");
         $this->assert($lines[1]['direction'] === 'out' && (int) $lines[1]['account_id'] === (int) $bca['id'], "Line keluar dari akun sumber");
 
-        // Cek bahwa transfer TIDAK memengaruhi laporan Income maupun Expense
         $overview = $this->service->getOverviewData();
         $this->assert((float) $overview['total_income'] === 10000000.00, "Transfer TIDAK dihitung sebagai Income (tetap Rp 10.000.000)");
         $this->assert((float) $overview['total_expenses'] === 200000.00, "Transfer TIDAK dihitung sebagai Expense (tetap Rp 200.000)");
@@ -365,26 +361,34 @@ class FinanceTestRunner
         $tunai = $this->getAccountByName('Dompet Tunai');
         $tunaiId = (int) $tunai['id'];
 
-        // Cari transaksi makan 200.000
         $stmt = $this->db->prepare("SELECT id FROM transactions WHERE description = 'Makan Siang & Kopi'");
         $stmt->execute();
         $txId = (int) $stmt->fetchColumn();
 
-        // Edit nominal menjadi 250.000
         $this->service->updateTransaction($txId, [
             'amount' => 250000.00,
             'description' => 'Makan Siang & Kopi (Revisi)',
         ]);
 
-        // Cek ledger lines tidak berganda
         $stmtLines = $this->db->prepare("SELECT COUNT(*) FROM transaction_lines WHERE transaction_id = ?");
         $stmtLines->execute([$txId]);
         $lineCount = (int) $stmtLines->fetchColumn();
         $this->assert($lineCount === 1, "Ledger lines setelah update tidak mengganda (tetap 1 baris)");
 
         $tunaiAfter = $this->service->getAccountById($tunaiId);
-        // Saldo awal 500.000 - 250.000 + 1.000.000 transfer = 1.250.000
         $this->assert((float) $tunaiAfter['current_balance'] === 1250000.00, "Saldo akun terupdate akurat setelah edit: " . format_rupiah($tunaiAfter['current_balance']));
+    }
+
+    private function testTransactionSearchAndAccountFilters(): void
+    {
+        echo "\n[6a] Transaction Search & Account Filters:\n";
+
+        $account = $this->getAccountByName('Rekening BCA');
+        $filters = ['account_id' => (int) $account['id'], 'search' => 'Gaji Pokok'];
+        $rows = $this->service->getTransactions($filters, 20, 0);
+        $count = $this->service->countTransactions($filters);
+        $this->assert(count($rows) === 1 && str_contains($rows[0]['description'], 'Gaji Pokok'), 'Search and account filters bind correctly with native PDO placeholders');
+        $this->assert($count === 1, 'Filtered transaction count matches filtered transaction rows');
     }
 
     private function testSoftDeleteExclusion(): void
@@ -398,11 +402,9 @@ class FinanceTestRunner
         $stmt->execute();
         $txId = (int) $stmt->fetchColumn();
 
-        // Soft delete
         $this->service->softDeleteTransaction($txId);
 
         $tunaiAfter = $this->service->getAccountById($tunaiId);
-        // Tanpa transaksi makan 250.000: 500.000 awal + 1.000.000 transfer = 1.500.000
         $this->assert((float) $tunaiAfter['current_balance'] === 1500000.00, "Soft-deleted transaksi keluar dari saldo (saldo kembali menjadi " . format_rupiah($tunaiAfter['current_balance']) . ")");
 
         $overview = $this->service->getOverviewData();
@@ -437,7 +439,6 @@ class FinanceTestRunner
 
         $tunai = $this->getAccountByName('Dompet Tunai');
 
-        // Buat pengeluaran makan Rp 400.000
         $this->service->createTransaction([
             'type' => 'expense',
             'description' => 'Makan Malam Restoran',
@@ -469,7 +470,6 @@ class FinanceTestRunner
         $bca = $this->getAccountByName('Rekening BCA');
         $bcaBalanceBefore = (float) $bca['current_balance'];
 
-        // Bayar cicilan 1: Pokok 1.000.000 + Bunga 100.000
         $paymentId = $this->service->recordLoanPayment([
             'loan_id' => $loanId,
             'account_id' => (int) $bca['id'],
@@ -485,16 +485,12 @@ class FinanceTestRunner
         $this->assert((float) $loanAfter['outstanding_interest'] === 100000.00, "Sisa bunga berkurang menjadi Rp 100.000");
         $this->assert($loanAfter['status'] === 'partially_paid', "Status pinjaman: partially_paid");
 
-        // Periksa bahwa saldo BCA berkurang sejumlah TOTAL pembayaran (1.100.000)
         $bcaAfter = $this->service->getAccountById((int) $bca['id']);
         $this->assert((float) $bcaAfter['current_balance'] === $bcaBalanceBefore - 1100000.00, "Kas keluar akun BCA berkurang Rp 1.100.000: " . format_rupiah($bcaAfter['current_balance']));
 
-        // Periksa bahwa Pokok pinjaman TIDAK dihitung sebagai beban di overview, tetapi Bunga dihitung
         $overview = $this->service->getOverviewData();
-        // Total expense sebelumnya: 400.000 (makan malam). Ditambah bunga pinjaman 100.000 = 500.000. Pokok 1.000.000 tidak dihitung!
         $this->assert((float) $overview['total_expenses'] === 500000.00, "Pokok pinjaman BUKAN expense, Bunga pinjaman ADALAH expense (Total Expenses = Rp 500.000)");
 
-        // Bayar cicilan 2 (Pelunasan sisa): Pokok 1.000.000 + Bunga 100.000
         $this->service->recordLoanPayment([
             'loan_id' => $loanId,
             'account_id' => (int) $bca['id'],
@@ -552,6 +548,5 @@ class FinanceTestRunner
     }
 }
 
-// Eksekusi test
 $runner = new FinanceTestRunner();
 $runner->run();

@@ -25,23 +25,23 @@ function handleTxTypeChange(type) {
     const optIncome = document.getElementById('optgroup_income');
 
     if (type === 'transfer') {
-        groupTarget.style.display = 'flex';
+        groupTarget.hidden = false;
         targetAccountSelect.required = true;
-        groupCategory.style.display = 'none';
+        groupCategory.hidden = true;
         labelSource.innerText = 'Akun Sumber *';
     } else {
-        groupTarget.style.display = 'none';
+        groupTarget.hidden = true;
         targetAccountSelect.required = false;
-        groupCategory.style.display = 'flex';
-        
+        groupCategory.hidden = false;
+
         if (type === 'income') {
             labelSource.innerText = 'Akun Penerima *';
-            optExpense.style.display = 'none';
-            optIncome.style.display = '';
+            optExpense.hidden = true;
+            optIncome.hidden = false;
         } else {
             labelSource.innerText = 'Akun Sumber *';
-            optExpense.style.display = '';
-            optIncome.style.display = 'none';
+            optExpense.hidden = false;
+            optIncome.hidden = true;
         }
     }
 }
@@ -76,10 +76,4 @@ document.addEventListener('change', (event) => {
 document.addEventListener('DOMContentLoaded', () => {
     const typeSelect = document.getElementById('tx_type');
     if (typeSelect) handleTxTypeChange(typeSelect.value);
-    document.querySelectorAll('[data-width]').forEach((element) => {
-        element.style.width = `${Number(element.dataset.width)}%`;
-    });
-    document.querySelectorAll('[data-height]').forEach((element) => {
-        element.style.height = `${Number(element.dataset.height)}px`;
-    });
 });

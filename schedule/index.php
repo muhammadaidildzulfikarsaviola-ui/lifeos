@@ -5,8 +5,11 @@ require_once dirname(__DIR__) . '/app/Modules/Schedule/init.php';
 $pageTitle = 'Schedule · Kalender';
 $currentPage = 'schedule';
 $today = new DateTimeImmutable('today');
-$selectedDate = DateTimeImmutable::createFromFormat('!Y-m-d', (string)($_GET['date'] ?? $today->format('Y-m-d'))) ?: $today;
-$view = in_array($_GET['view'] ?? 'month', ['month','week','day'], true) ? $_GET['view'] : 'month';
+$selectedDate = new DateTimeImmutable(schedule_query_date($_GET['date'] ?? null, $today->format('Y-m-d')));
+$requestedView = $_GET['view'] ?? 'month';
+$view = is_string($requestedView) && in_array($requestedView, ['month','week','day'], true)
+    ? $requestedView
+    : 'month';
 $monthStart = $selectedDate->modify('first day of this month');
 $monthGridStart = $monthStart->modify('monday this week');
 $rangeStart = match ($view) { 'week' => $selectedDate->modify('monday this week'), 'day' => $selectedDate, default => $monthGridStart };

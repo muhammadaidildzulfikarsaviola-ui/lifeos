@@ -29,7 +29,6 @@ $budgets = $overview['budgets_summary'] ?? [];
 $upcomingBills = $overview['upcoming_bills'] ?? [];
 $loansSummary = $overview['loans_summary'] ?? ['active_count' => 0, 'total_principal' => 0.00, 'total_outstanding' => 0.00, 'list' => []];
 
-// Cari nilai maksimum chart untuk kalkulasi tinggi bar (persentase)
 $maxChartVal = 1.0;
 foreach ($chartData as $cd) {
     $maxChartVal = max($maxChartVal, (float) $cd['income'], (float) $cd['expense']);
@@ -38,7 +37,7 @@ foreach ($chartData as $cd) {
 
 <div class="finance-page">
 
-    <!-- Page heading -->
+
     <section class="finance-heading">
         <div>
             <p class="eyebrow">MONEY MANAGEMENT</p>
@@ -58,13 +57,13 @@ foreach ($chartData as $cd) {
         </div>
     </section>
 
-    <!-- Navigation -->
+
     <?php render_finance_nav('overview'); ?>
 
-    <!-- Alerts -->
+
     <?php render_finance_alerts($dbError); ?>
 
-    <!-- Summary KPI Cards -->
+
     <section class="finance-section">
         <div class="finance-section-heading">
             <div>
@@ -115,7 +114,7 @@ foreach ($chartData as $cd) {
         </div>
     </section>
 
-    <!-- Cash Flow Chart -->
+
     <section class="finance-section">
         <div class="finance-section-heading">
             <div>
@@ -155,16 +154,20 @@ foreach ($chartData as $cd) {
                             ?>
                             <div class="chart-bar-group">
                                 <div class="chart-bars-pair">
-                                    <div
+                                    <progress
                                         class="chart-bar bar-income"
-                                        data-height="<?= (int) $incHeight ?>"
+                                        max="130"
+                                        value="<?= (int) $incHeight ?>"
+                                        aria-label="Pemasukan: <?= e(format_rupiah($cd['income'])) ?>"
                                         title="Pemasukan: <?= e(format_rupiah($cd['income'])) ?>"
-                                    ></div>
-                                    <div
+                                    ></progress>
+                                    <progress
                                         class="chart-bar bar-expense"
-                                        data-height="<?= (int) $expHeight ?>"
+                                        max="130"
+                                        value="<?= (int) $expHeight ?>"
+                                        aria-label="Pengeluaran: <?= e(format_rupiah($cd['expense'])) ?>"
                                         title="Pengeluaran: <?= e(format_rupiah($cd['expense'])) ?>"
-                                    ></div>
+                                    ></progress>
                                 </div>
                                 <span class="chart-label"><?= e($cd['label']) ?></span>
                             </div>
@@ -186,10 +189,10 @@ foreach ($chartData as $cd) {
         </article>
     </section>
 
-    <!-- Lower Dashboard Grid -->
+
     <section class="finance-lower-grid">
 
-        <!-- Recent Transactions -->
+
         <article class="finance-panel">
             <div class="finance-panel-heading">
                 <div>
@@ -255,7 +258,7 @@ foreach ($chartData as $cd) {
             <?php endif; ?>
         </article>
 
-        <!-- Account Summary -->
+
         <article class="finance-panel">
             <div class="finance-panel-heading">
                 <div>
@@ -311,7 +314,7 @@ foreach ($chartData as $cd) {
             <?php endif; ?>
         </article>
 
-        <!-- Budget Overview -->
+
         <article class="finance-panel">
             <div class="finance-panel-heading">
                 <div>
@@ -341,10 +344,12 @@ foreach ($chartData as $cd) {
                                 </span>
                             </div>
                             <div class="budget-progress-bar-container">
-                                <div
+                                <progress
                                     class="budget-progress-bar <?= e($b['status_indicator']) ?>"
-                                    data-width="<?= min(100, max(2, (int) $b['percentage'])) ?>"
-                                ></div>
+                                    max="100"
+                                    value="<?= min(100, max(2, (int) $b['percentage'])) ?>"
+                                    aria-label="Pemakaian anggaran <?= e($b['name']) ?>"
+                                ></progress>
                             </div>
                             <div class="budget-amounts-row">
                                 <span>Terpakai: <strong><?= format_rupiah($b['total_spent']) ?></strong></span>
@@ -356,7 +361,7 @@ foreach ($chartData as $cd) {
             <?php endif; ?>
         </article>
 
-        <!-- Upcoming Bills -->
+
         <article class="finance-panel">
             <div class="finance-panel-heading">
                 <div>
@@ -412,7 +417,7 @@ foreach ($chartData as $cd) {
 
     </section>
 
-    <!-- Personal Loans Summary Section -->
+
     <section class="finance-section">
         <article class="finance-panel">
             <div class="finance-panel-heading">

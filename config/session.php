@@ -1,10 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/*
- * LIFEOS tidak memakai login. Session hanya untuk CSRF dan state sementara.
- * Session cookie tetap diperketat untuk mencegah session fixation dan pencurian cookie.
- */
 if (session_status() !== PHP_SESSION_ACTIVE) {
     ini_set('session.use_strict_mode', '1');
     ini_set('session.use_only_cookies', '1');

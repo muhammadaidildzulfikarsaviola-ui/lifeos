@@ -5,13 +5,12 @@ require_once dirname(__DIR__) . '/includes/bootstrap.php';
 
 $pageTitle = 'Reports';
 $currentPage = 'reports';
+$moduleName = 'Reports';
+$moduleDescription = 'Review patterns, progress, and useful summaries.';
+$moduleEmptyTitle = 'Reports are not available yet';
+$moduleEmptyMessage = 'No report views or insights are currently implemented.';
 
 require LIFEOS_ROOT . '/includes/header.php';
 ?>
-<section class="module-placeholder">
-    <p class="eyebrow">LIFEOS MODULE</p>
-    <h1>Reports</h1>
-    <p>Coming Soon</p>
-    <p><code>reports/index.php</code></p>
-</section>
+<?php require LIFEOS_ROOT . '/includes/module_placeholder.php'; ?>
 <?php require LIFEOS_ROOT . '/includes/footer.php'; ?>

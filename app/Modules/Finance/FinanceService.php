@@ -40,9 +40,6 @@ class FinanceService
         }
     }
 
-    // =========================================================================
-    // AKUN (ACCOUNTS)
-    // =========================================================================
 
     /**
      * Ambil semua akun beserta saldo saat ini yang dihitung dari ledger.
@@ -53,7 +50,7 @@ class FinanceService
         $where = $onlyActive ? 'WHERE a.is_active = 1' : '';
 
         $sql = "
-            SELECT 
+            SELECT
                 a.*,
                 COALESCE(m.total_in, 0.00) AS total_incoming,
                 COALESCE(m.total_out, 0.00) AS total_outgoing,
@@ -61,7 +58,7 @@ class FinanceService
                 COALESCE(m.tx_count, 0) AS transaction_count
             FROM accounts a
             LEFT JOIN (
-                SELECT 
+                SELECT
                     tl.account_id,
                     SUM(CASE WHEN tl.direction = 'in' THEN tl.amount ELSE 0 END) AS total_in,
                     SUM(CASE WHEN tl.direction = 'out' THEN tl.amount ELSE 0 END) AS total_out,
@@ -84,7 +81,7 @@ class FinanceService
     public function getAccountById(int $id): ?array
     {
         $sql = "
-            SELECT 
+            SELECT
                 a.*,
                 COALESCE(m.total_in, 0.00) AS total_incoming,
                 COALESCE(m.total_out, 0.00) AS total_outgoing,
@@ -92,7 +89,7 @@ class FinanceService
                 COALESCE(m.tx_count, 0) AS transaction_count
             FROM accounts a
             LEFT JOIN (
-                SELECT 
+                SELECT
                     tl.account_id,
                     SUM(CASE WHEN tl.direction = 'in' THEN tl.amount ELSE 0 END) AS total_in,
                     SUM(CASE WHEN tl.direction = 'out' THEN tl.amount ELSE 0 END) AS total_out,
@@ -184,8 +181,8 @@ class FinanceService
     public function deleteAccount(int $id): bool
     {
         $stmt = $this->db->prepare("
-            SELECT COUNT(*) 
-            FROM transaction_lines 
+            SELECT COUNT(*)
+            FROM transaction_lines
             WHERE account_id = :id
         ");
         $stmt->execute(['id' => $id]);
@@ -210,9 +207,6 @@ class FinanceService
         ]);
     }
 
-    // =========================================================================
-    // KATEGORI (CATEGORIES)
-    // =========================================================================
 
     public function getCategories(?string $type = null): array
     {
@@ -271,13 +265,9 @@ class FinanceService
             }
             $seeded = true;
         } catch (Throwable) {
-            // Abaikan jika tabel belum ada saat pengecekan awal
         }
     }
 
-    // =========================================================================
-    // TRANSAKSI (TRANSACTIONS & LEDGER)
-    // =========================================================================
 
     /**
      * Ambil daftar transaksi dengan filter, pencarian, dan pagination.
@@ -293,8 +283,9 @@ class FinanceService
         }
 
         if (!empty($filters['account_id'])) {
-            $conditions[] = '(t.account_id = :account_id OR t.target_account_id = :account_id)';
-            $params['account_id'] = (int) $filters['account_id'];
+            $conditions[] = '(t.account_id = :account_id_source OR t.target_account_id = :account_id_target)';
+            $params['account_id_source'] = (int) $filters['account_id'];
+            $params['account_id_target'] = (int) $filters['account_id'];
         }
 
         if (!empty($filters['category_id'])) {
@@ -318,14 +309,17 @@ class FinanceService
         }
 
         if (!empty($filters['search'])) {
-            $conditions[] = '(t.description LIKE :search OR t.notes LIKE :search OR t.reference_number LIKE :search)';
-            $params['search'] = '%' . trim((string) $filters['search']) . '%';
+            $conditions[] = '(t.description LIKE :search_description OR t.notes LIKE :search_notes OR t.reference_number LIKE :search_reference)';
+            $searchTerm = '%' . trim((string) $filters['search']) . '%';
+            $params['search_description'] = $searchTerm;
+            $params['search_notes'] = $searchTerm;
+            $params['search_reference'] = $searchTerm;
         }
 
         $whereClause = 'WHERE ' . implode(' AND ', $conditions);
 
         $sql = "
-            SELECT 
+            SELECT
                 t.*,
                 a.name AS account_name,
                 a.type AS account_type,
@@ -359,8 +353,9 @@ class FinanceService
         }
 
         if (!empty($filters['account_id'])) {
-            $conditions[] = '(t.account_id = :account_id OR t.target_account_id = :account_id)';
-            $params['account_id'] = (int) $filters['account_id'];
+            $conditions[] = '(t.account_id = :account_id_source OR t.target_account_id = :account_id_target)';
+            $params['account_id_source'] = (int) $filters['account_id'];
+            $params['account_id_target'] = (int) $filters['account_id'];
         }
 
         if (!empty($filters['category_id'])) {
@@ -384,14 +379,17 @@ class FinanceService
         }
 
         if (!empty($filters['search'])) {
-            $conditions[] = '(t.description LIKE :search OR t.notes LIKE :search OR t.reference_number LIKE :search)';
-            $params['search'] = '%' . trim((string) $filters['search']) . '%';
+            $conditions[] = '(t.description LIKE :search_description OR t.notes LIKE :search_notes OR t.reference_number LIKE :search_reference)';
+            $searchTerm = '%' . trim((string) $filters['search']) . '%';
+            $params['search_description'] = $searchTerm;
+            $params['search_notes'] = $searchTerm;
+            $params['search_reference'] = $searchTerm;
         }
 
         $whereClause = 'WHERE ' . implode(' AND ', $conditions);
 
         $sql = "
-            SELECT COUNT(*) 
+            SELECT COUNT(*)
             FROM transactions t
             INNER JOIN accounts a ON a.id = t.account_id
             {$whereClause}
@@ -405,7 +403,7 @@ class FinanceService
     public function getTransactionById(int $id): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT 
+            SELECT
                 t.*,
                 a.name AS account_name,
                 ta.name AS target_account_name,
@@ -558,11 +556,9 @@ class FinanceService
                 'id' => $id,
             ]);
 
-            // Hapus ledger lines & transfer metadata lama
             $this->db->prepare("DELETE FROM transaction_lines WHERE transaction_id = :id")->execute(['id' => $id]);
             $this->db->prepare("DELETE FROM transfers WHERE transaction_id = :id")->execute(['id' => $id]);
 
-            // Buat kembali ledger lines yang konsisten
             $this->createLedgerLines($id, $type, $amount, $date, $accountId, $targetAccountId);
 
             if ($type === 'transfer' && $targetAccountId !== null) {
@@ -593,8 +589,8 @@ class FinanceService
     public function softDeleteTransaction(int $id): bool
     {
         $stmt = $this->db->prepare("
-            UPDATE transactions 
-            SET deleted_at = CURRENT_TIMESTAMP 
+            UPDATE transactions
+            SET deleted_at = CURRENT_TIMESTAMP
             WHERE id = :id AND deleted_at IS NULL
         ");
         return $stmt->execute(['id' => $id]);
@@ -692,7 +688,6 @@ class FinanceService
                 'line_date' => $date,
             ]);
         } elseif ($type === 'transfer') {
-            // Transfer menghasilkan 2 ledger movements: keluar dari sumber, masuk ke tujuan
             $stmtLine->execute([
                 'tx_id' => $txId,
                 'account_id' => $accountId,
@@ -710,9 +705,6 @@ class FinanceService
         }
     }
 
-    // =========================================================================
-    // ANGGARAN (BUDGETS)
-    // =========================================================================
 
     public function getBudgets(): array
     {
@@ -735,8 +727,8 @@ class FinanceService
     public function getBudgetById(int $id): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT b.* 
-            FROM budgets b 
+            SELECT b.*
+            FROM budgets b
             WHERE b.id = :id AND b.deleted_at IS NULL
             LIMIT 1
         ");
@@ -757,9 +749,8 @@ class FinanceService
         $startDate = $budget['start_date'];
         $endDate = $budget['end_date'];
 
-        // Ambil item kategori anggaran
         $stmtItems = $this->db->prepare("
-            SELECT 
+            SELECT
                 bi.*,
                 c.name AS category_name,
                 c.icon AS category_icon,
@@ -776,7 +767,6 @@ class FinanceService
 
         foreach ($items as &$item) {
             $catId = (int) $item['category_id'];
-            // Spending kategori: expense posted valid, bukan pokok pinjaman, bukan soft-deleted
             $stmtSpent = $this->db->prepare("
                 SELECT COALESCE(SUM(amount), 0.00)
                 FROM transactions
@@ -811,13 +801,13 @@ class FinanceService
             : 0.0;
 
         if ($budget['percentage'] >= 100.0) {
-            $budget['status_indicator'] = 'exceeded'; // Melebihi limit
+            $budget['status_indicator'] = 'exceeded';
             $budget['status_label'] = 'Melebihi Limit';
         } elseif ($budget['percentage'] >= 80.0) {
-            $budget['status_indicator'] = 'warning';  // Mendekati limit
+            $budget['status_indicator'] = 'warning';
             $budget['status_label'] = 'Mendekati Limit';
         } else {
-            $budget['status_indicator'] = 'normal';   // Aman
+            $budget['status_indicator'] = 'normal';
             $budget['status_label'] = 'Terkendali';
         }
     }
@@ -829,7 +819,7 @@ class FinanceService
         $startDate = trim((string) ($data['start_date'] ?? ''));
         $endDate = trim((string) ($data['end_date'] ?? ''));
         $notes = trim((string) ($data['notes'] ?? ''));
-        $categoryAllocations = $data['categories'] ?? []; // [category_id => amount]
+        $categoryAllocations = $data['categories'] ?? [];
 
         if ($name === '') {
             throw new InvalidArgumentException('Nama anggaran wajib diisi.');
@@ -848,8 +838,6 @@ class FinanceService
             throw new InvalidArgumentException('Tanggal mulai tidak boleh lebih besar dari tanggal selesai.');
         }
 
-        // Hitung total limit: jika user mengisi total_limit > 0, gunakan nilai tersebut.
-        // Jika tidak, hitung dari akumulasi alokasi kategori.
         $userLimit = isset($data['total_limit']) ? (float) $data['total_limit'] : 0.00;
         $categoriesSum = 0.00;
         $validAllocations = [];
@@ -941,9 +929,6 @@ class FinanceService
         return $stmt->execute(['id' => $id]);
     }
 
-    // =========================================================================
-    // PINJAMAN PRIBADI (LOANS & PAYMENTS)
-    // =========================================================================
 
     public function getLoans(?string $status = null): array
     {
@@ -956,7 +941,7 @@ class FinanceService
         }
 
         $sql = "
-            SELECT 
+            SELECT
                 l.*,
                 COALESCE(p.total_principal_paid, 0.00) AS total_principal_paid,
                 COALESCE(p.total_interest_paid, 0.00) AS total_interest_paid,
@@ -966,7 +951,7 @@ class FinanceService
                 ((l.principal_amount + l.interest_amount) - COALESCE(p.total_paid, 0.00)) AS outstanding_total
             FROM loans l
             LEFT JOIN (
-                SELECT 
+                SELECT
                     lp.loan_id,
                     SUM(lp.principal_paid) AS total_principal_paid,
                     SUM(lp.interest_paid) AS total_interest_paid,
@@ -986,7 +971,7 @@ class FinanceService
     public function getLoanById(int $id): ?array
     {
         $sql = "
-            SELECT 
+            SELECT
                 l.*,
                 COALESCE(p.total_principal_paid, 0.00) AS total_principal_paid,
                 COALESCE(p.total_interest_paid, 0.00) AS total_interest_paid,
@@ -996,7 +981,7 @@ class FinanceService
                 ((l.principal_amount + l.interest_amount) - COALESCE(p.total_paid, 0.00)) AS outstanding_total
             FROM loans l
             LEFT JOIN (
-                SELECT 
+                SELECT
                     lp.loan_id,
                     SUM(lp.principal_paid) AS total_principal_paid,
                     SUM(lp.interest_paid) AS total_interest_paid,
@@ -1016,9 +1001,8 @@ class FinanceService
             return null;
         }
 
-        // Ambil riwayat pembayaran
         $stmtPayments = $this->db->prepare("
-            SELECT 
+            SELECT
                 lp.*,
                 a.name AS account_name
             FROM loan_payments lp
@@ -1167,7 +1151,6 @@ class FinanceService
             $principalTxId = null;
             $interestTxId = null;
 
-            // 1. Jika ada pembayaran pokok: buat transaksi kas keluar (is_loan_principal = 1)
             if ($principalPaid > 0) {
                 $desc = 'Pembayaran Pokok Pinjaman: ' . $loan['lender_name'];
                 $stmtTx = $this->db->prepare("
@@ -1191,7 +1174,6 @@ class FinanceService
                 $this->createLedgerLines($principalTxId, 'expense', $principalPaid, $paymentDate, $accountId, null);
             }
 
-            // 2. Jika ada pembayaran bunga: buat transaksi kas keluar beban bunga
             if ($interestPaid > 0) {
                 $bungaCatId = $this->getOrCreateInterestCategory();
                 $desc = 'Beban Bunga Pinjaman: ' . $loan['lender_name'];
@@ -1217,7 +1199,6 @@ class FinanceService
                 $this->createLedgerLines($interestTxId, 'expense', $interestPaid, $paymentDate, $accountId, null);
             }
 
-            // 3. Catat di loan_payments
             $stmtPayment = $this->db->prepare("
                 INSERT INTO loan_payments (
                     loan_id, account_id, principal_paid, interest_paid,
@@ -1239,7 +1220,6 @@ class FinanceService
             ]);
             $paymentId = (int) $this->db->lastInsertId();
 
-            // 4. Update status pinjaman
             $newOutstandingPrincipal = $outstandingPrincipal - $principalPaid;
             $newOutstandingInterest = $outstandingInterest - $interestPaid;
 
@@ -1315,9 +1295,6 @@ class FinanceService
         return $stmt->execute(['id' => $id]);
     }
 
-    // =========================================================================
-    // TAGIHAN & PENGINGAT (FIXED BILL REMINDERS)
-    // =========================================================================
 
     public function getBills(bool $onlyActive = false): array
     {
@@ -1327,7 +1304,7 @@ class FinanceService
         }
 
         $sql = "
-            SELECT 
+            SELECT
                 b.*,
                 c.name AS category_name,
                 c.icon AS category_icon,
@@ -1369,7 +1346,7 @@ class FinanceService
     public function getBillById(int $id): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT 
+            SELECT
                 b.*,
                 c.name AS category_name,
                 a.name AS account_name
@@ -1485,24 +1462,18 @@ class FinanceService
         return $stmt->execute(['id' => $id]);
     }
 
-    // =========================================================================
-    // OVERVIEW & ANALYTICS
-    // =========================================================================
 
     public function getOverviewData(): array
     {
-        // 1. Total saldo seluruh akun aktif
         $accounts = $this->getAccounts(true);
         $totalBalance = 0.00;
         foreach ($accounts as $acc) {
             $totalBalance += (float) $acc['current_balance'];
         }
 
-        // 2. Bulan berjalan
         $startOfMonth = date('Y-m-01');
         $endOfMonth = date('Y-m-t');
 
-        // Total Income bulan berjalan (posted, non-deleted)
         $stmtInc = $this->db->prepare("
             SELECT COALESCE(SUM(amount), 0.00)
             FROM transactions
@@ -1514,7 +1485,6 @@ class FinanceService
         $stmtInc->execute(['start_date' => $startOfMonth, 'end_date' => $endOfMonth]);
         $totalIncome = (float) $stmtInc->fetchColumn();
 
-        // Total Expense bulan berjalan (posted, non-deleted, bukan transfer, bukan pokok pinjaman)
         $stmtExp = $this->db->prepare("
             SELECT COALESCE(SUM(amount), 0.00)
             FROM transactions
@@ -1527,27 +1497,20 @@ class FinanceService
         $stmtExp->execute(['start_date' => $startOfMonth, 'end_date' => $endOfMonth]);
         $totalExpenses = (float) $stmtExp->fetchColumn();
 
-        // Net cash flow
         $netCashFlow = $totalIncome - $totalExpenses;
 
-        // 3. Cash flow chart 6 bulan terakhir
         $chartData = $this->getMonthlyCashFlowChart(6);
 
-        // 4. Transaksi terbaru (maks 6)
         $recentTransactions = $this->getTransactions([], 6, 0);
 
-        // 5. Akun aktif ringkasan (maks 4)
         $topAccounts = array_slice($accounts, 0, 4);
 
-        // 6. Anggaran aktif ringkasan
         $budgets = $this->getBudgets();
         $budgetsSummary = array_slice($budgets, 0, 3);
 
-        // 7. Tagihan mendatang (hanya aktif, maks 4)
         $bills = $this->getBills(true);
         $upcomingBills = array_slice($bills, 0, 4);
 
-        // 8. Ringkasan pinjaman pribadi
         $loans = $this->getLoans('unpaid');
         $partiallyPaidLoans = $this->getLoans('partially_paid');
         $activeLoans = array_merge($loans, $partiallyPaidLoans);
@@ -1596,7 +1559,6 @@ class FinanceService
             $year = date('Y', $timestamp);
             $label = ($indonesianMonths[$monthNum] ?? date('M', $timestamp)) . ' ' . $year;
 
-            // Income
             $stmtInc = $this->db->prepare("
                 SELECT COALESCE(SUM(amount), 0.00)
                 FROM transactions
@@ -1608,7 +1570,6 @@ class FinanceService
             $stmtInc->execute(['start_date' => $startDate, 'end_date' => $endDate]);
             $inc = (float) $stmtInc->fetchColumn();
 
-            // Expense (excluding transfer and loan principal)
             $stmtExp = $this->db->prepare("
                 SELECT COALESCE(SUM(amount), 0.00)
                 FROM transactions

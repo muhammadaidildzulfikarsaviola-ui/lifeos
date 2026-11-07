@@ -5,13 +5,12 @@ require_once dirname(__DIR__) . '/includes/bootstrap.php';
 
 $pageTitle = 'Projects';
 $currentPage = 'projects';
+$moduleName = 'Projects';
+$moduleDescription = 'Organize the work you are building and moving forward.';
+$moduleEmptyTitle = 'Project tracking is not available yet';
+$moduleEmptyMessage = 'Project creation, task boards, and progress tracking have not been implemented yet.';
 
 require LIFEOS_ROOT . '/includes/header.php';
 ?>
-<section class="module-placeholder">
-    <p class="eyebrow">LIFEOS MODULE</p>
-    <h1>Projects</h1>
-    <p>Coming Soon</p>
-    <p><code>projects/index.php</code></p>
-</section>
+<?php require LIFEOS_ROOT . '/includes/module_placeholder.php'; ?>
 <?php require LIFEOS_ROOT . '/includes/footer.php'; ?>

@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/app/Modules/Schedule/init.php';
 $pageTitle = 'Schedule · Shift kerja';
 $currentPage = 'schedule';
 $error = null;
-$editingId = (int)($_GET['edit'] ?? 0);
+$editingId = max(0, request_integer($_GET['edit'] ?? 0));
 $editingTemplate = null;
 if ($editingId && $scheduleService && !$dbError) {
     foreach ($scheduleService->listShiftTemplates() as $row) if ((int)$row['id'] === $editingId) $editingTemplate = $row;

@@ -6,7 +6,6 @@ require_once __DIR__ . '/init.php';
 $pageTitle = 'Finance · Akun';
 $currentPage = 'finance';
 
-// Handle POST actions
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     verify_csrf();
 
@@ -67,10 +66,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 }
 
-// Data fetching
 $accounts = [];
-$activeAction = $_GET['action'] ?? '';
-$accountId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$activeAction = request_string($_GET['action'] ?? '');
+$accountId = max(0, request_integer($_GET['id'] ?? 0));
 $editingAccount = null;
 $viewAccount = null;
 $accountTransactions = [];
@@ -97,7 +95,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 <div class="finance-page">
 
-    <!-- Page Heading -->
+
     <section class="finance-heading">
         <div>
             <p class="eyebrow">MONEY MANAGEMENT</p>
@@ -118,13 +116,13 @@ require LIFEOS_ROOT . '/includes/header.php';
         </div>
     </section>
 
-    <!-- Navigation -->
+
     <?php render_finance_nav('accounts'); ?>
 
-    <!-- Alerts -->
+
     <?php render_finance_alerts($dbError); ?>
 
-    <!-- View Account Details Mode -->
+
     <?php if ($viewAccount !== null): ?>
         <article class="finance-panel finance-detail-panel">
             <div class="finance-panel-heading">
@@ -177,7 +175,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- Transaction History for this Account -->
+
             <h3 class="finance-subheading">
                 Riwayat Transaksi pada Akun Ini
             </h3>
@@ -236,7 +234,7 @@ require LIFEOS_ROOT . '/includes/header.php';
         </article>
     <?php endif; ?>
 
-    <!-- Accounts Cards Grid -->
+
     <section class="finance-section">
         <div class="finance-section-heading">
             <div>
@@ -346,7 +344,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 </div>
 
-<!-- Modal Tambah / Edit Akun -->
+
 <div
     class="finance-modal-backdrop <?= ($activeAction === 'create' || $editingAccount !== null) ? 'active' : '' ?>"
     id="modalAccount"

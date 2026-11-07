@@ -26,7 +26,6 @@ function upgrade_finance_schema(): ?string
         return 'Gagal membaca file schema.';
     }
 
-    // Split into individual statements; simple split on semicolon followed by newline.
     $statements = preg_split('/;(\s*\R)+/', $sql);
     foreach ($statements as $stmt) {
         $stmt = trim($stmt);
@@ -36,20 +35,17 @@ function upgrade_finance_schema(): ?string
         try {
             $pdo->exec($stmt);
         } catch (Throwable $e) {
-            // Log but continue; most errors will be "table already exists" which is harmless.
             error_log('[FinanceUpgrade] ' . $e->getMessage() . ' in statement: ' . $stmt);
         }
     }
-    return null; // null means success
+    return null;
 }
 
 try {
     $financeService = new FinanceService();
     if (!$financeService->isInstalled()) {
-        // Attempt automatic upgrade before showing warning.
         $upgradeError = upgrade_finance_schema();
         if ($upgradeError === null) {
-            // Re‑check after upgrade.
             if (!$financeService->isInstalled()) {
                 $dbError = 'Tabel modul Finance belum dibuat di database meskipun upgrade dijalankan.';
             }
@@ -113,4 +109,3 @@ function render_finance_nav(string $activeSlug): void
     </nav>
     <?php
 }
-

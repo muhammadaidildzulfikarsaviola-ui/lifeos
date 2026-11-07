@@ -21,10 +21,13 @@ $moduleCss = [
     'finance' => 'finance.css',
     'schedule' => 'schedule.css',
     'tasks' => 'tasks.css',
+    'habits' => 'habits.css',
 ];
 $moduleJs = [
     'finance' => 'finance.js',
     'schedule' => 'schedule.js',
+    'tasks' => 'tasks.js',
+    'habits' => 'habits.js',
 ];
 
 $globalCss = url('assets/css/app.css');

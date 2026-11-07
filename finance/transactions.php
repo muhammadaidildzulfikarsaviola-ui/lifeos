@@ -6,7 +6,6 @@ require_once __DIR__ . '/init.php';
 $pageTitle = 'Finance · Transaksi';
 $currentPage = 'finance';
 
-// Handle POST actions (Create, Update, Delete)
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     verify_csrf();
 
@@ -67,7 +66,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 }
 
-// Data fetching
 $accounts = [];
 $incomeCategories = [];
 $expenseCategories = [];
@@ -76,16 +74,19 @@ $transactions = [];
 $totalTransactions = 0;
 $editingTx = null;
 
-$activeAction = $_GET['action'] ?? '';
-$editId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$activeAction = request_string($_GET['action'] ?? '');
+$editId = max(0, request_integer($_GET['id'] ?? 0));
 
-$filterType = $_GET['type'] ?? '';
-$filterAccount = !empty($_GET['account_id']) ? (int) $_GET['account_id'] : null;
-$filterCategory = !empty($_GET['category_id']) ? (int) $_GET['category_id'] : null;
-$filterStartDate = $_GET['start_date'] ?? '';
-$filterEndDate = $_GET['end_date'] ?? '';
-$filterSearch = trim((string) ($_GET['search'] ?? ''));
-$page = max(1, (int) ($_GET['page'] ?? 1));
+$requestedType = request_string($_GET['type'] ?? '');
+$filterType = in_array($requestedType, ['income', 'expense', 'transfer'], true) ? $requestedType : '';
+$requestedAccount = request_integer($_GET['account_id'] ?? 0);
+$requestedCategory = request_integer($_GET['category_id'] ?? 0);
+$filterAccount = $requestedAccount > 0 ? $requestedAccount : null;
+$filterCategory = $requestedCategory > 0 ? $requestedCategory : null;
+$filterStartDate = request_date($_GET['start_date'] ?? '');
+$filterEndDate = request_date($_GET['end_date'] ?? '');
+$filterSearch = trim(request_string($_GET['search'] ?? ''));
+$page = max(1, min(100000, request_integer($_GET['page'] ?? 1, 1)));
 $limit = 20;
 $offset = ($page - 1) * $limit;
 
@@ -123,7 +124,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 <div class="finance-page">
 
-    <!-- Page Heading -->
+
     <section class="finance-heading">
         <div>
             <p class="eyebrow">MONEY MANAGEMENT</p>
@@ -144,13 +145,13 @@ require LIFEOS_ROOT . '/includes/header.php';
         </div>
     </section>
 
-    <!-- Navigation -->
+
     <?php render_finance_nav('transactions'); ?>
 
-    <!-- Alerts -->
+
     <?php render_finance_alerts($dbError); ?>
 
-    <!-- Filter Bar -->
+
     <form method="GET" action="<?= e(url('finance/transactions.php')) ?>" class="finance-filter-bar">
         <input
             type="text"
@@ -212,7 +213,7 @@ require LIFEOS_ROOT . '/includes/header.php';
         <?php endif; ?>
     </form>
 
-    <!-- Transactions List Panel -->
+
     <article class="finance-panel">
         <div class="finance-panel-heading">
             <div>
@@ -326,7 +327,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                 </table>
             </div>
 
-            <!-- Pagination Controls -->
+
             <?php if ($totalPages > 1): ?>
                 <div class="finance-pagination">
                     <span>Halaman <?= $page ?> dari <?= $totalPages ?></span>
@@ -357,7 +358,7 @@ require LIFEOS_ROOT . '/includes/header.php';
 
 </div>
 
-<!-- Modal / Form Tambah / Edit Transaksi -->
+
 <div
     class="finance-modal-backdrop <?= ($activeAction === 'create' || $editingTx !== null) ? 'active' : '' ?>"
     id="modalTransaction"
@@ -470,7 +471,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                             </select>
                         </div>
 
-                        <div class="form-group" id="group_target_account" class="extracted-style-20">
+                        <div class="form-group" id="group_target_account" hidden>
                             <label for="tx_target_account">Akun Tujuan (Transfer) *</label>
                             <select name="target_account_id" id="tx_target_account" class="form-select">
                                 <option value="">-- Pilih Akun Tujuan --</option>
@@ -499,7 +500,7 @@ require LIFEOS_ROOT . '/includes/header.php';
                                         </option>
                                     <?php endforeach; ?>
                                 </optgroup>
-                                <optgroup label="Pemasukan" id="optgroup_income">
+                                <optgroup label="Pemasukan" id="optgroup_income" hidden>
                                     <?php foreach ($incomeCategories as $cat): ?>
                                         <option
                                             value="<?= $cat['id'] ?>"

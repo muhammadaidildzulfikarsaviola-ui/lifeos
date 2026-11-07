@@ -22,6 +22,38 @@ function e(mixed $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function request_string(mixed $value, string $default = ''): string
+{
+    return is_string($value) ? $value : $default;
+}
+
+function request_integer(mixed $value, int $default = 0): int
+{
+    if (is_int($value)) {
+        return $value;
+    }
+    if (!is_string($value) || !preg_match('/^-?\d+$/D', $value)) {
+        return $default;
+    }
+    $validated = filter_var($value, FILTER_VALIDATE_INT);
+    return $validated === false ? $default : $validated;
+}
+
+function request_date(mixed $value, string $default = ''): string
+{
+    if (!is_string($value) || !preg_match('/^\d{4}-\d{2}-\d{2}$/D', $value)) {
+        return $default;
+    }
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+    $errors = DateTimeImmutable::getLastErrors();
+    if ($date === false
+        || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))
+        || $date->format('Y-m-d') !== $value) {
+        return $default;
+    }
+    return $value;
+}
+
 function url(string $path = ''): string
 {
     $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
