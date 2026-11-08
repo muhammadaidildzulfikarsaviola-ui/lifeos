@@ -9,10 +9,10 @@ use App\Modules\Finance\FinanceService;
 $financeService = null;
 $dbError = null;
 
-/**
- * Execute the finance schema SQL file in an idempotent way.
- * Uses CREATE TABLE IF NOT EXISTS statements, so it is safe to run multiple times.
- */
+
+
+
+
 function upgrade_finance_schema(): ?string
 {
     $schemaPath = LIFEOS_ROOT . '/database/finance_schema.sql';
@@ -66,9 +66,9 @@ $financeNavigation = [
     ['slug' => 'bills', 'label' => 'Tagihan', 'path' => 'bills.php'],
 ];
 
-/**
- * Helper untuk render notifikasi flash dan error sistem.
- */
+
+
+
 function render_finance_alerts(?string $dbError = null): void
 {
     $flash = get_flash();
@@ -89,9 +89,9 @@ function render_finance_alerts(?string $dbError = null): void
     <?php endif;
 }
 
-/**
- * Helper untuk render navigasi sub-halaman Finance.
- */
+
+
+
 function render_finance_nav(string $activeSlug): void
 {
     global $financeNavigation;

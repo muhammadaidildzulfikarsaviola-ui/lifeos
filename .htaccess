@@ -2,7 +2,7 @@ Options -Indexes
 DirectoryIndex index.php
 ErrorDocument 404 /lifeos/404.php
 
-# LIFEOS v1 hanya untuk localhost. Jangan expose ke jaringan publik.
+
 <RequireAny>
     Require local
 </RequireAny>

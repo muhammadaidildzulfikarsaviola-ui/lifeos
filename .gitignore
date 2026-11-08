@@ -1,30 +1,30 @@
 
-# ==========================================
-# LIFEOS - Git Ignore
-# ==========================================
 
-# Environment and secrets
+
+
+
+
 .env
 .env.*
 !.env.example
 !.env.testing.example
 
-# Local configuration containing credentials
+
 /config/database.local.php
 /config/secrets.php
 /config/local.php
 
-# Composer dependencies
+
 /vendor/
 
-# Node dependencies and build cache
+
 /node_modules/
 /.npm/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
-# Runtime storage
+
 /storage/*
 !/storage/.gitkeep
 !/storage/app/
@@ -38,15 +38,15 @@ pnpm-debug.log*
 !/storage/exports/
 !/storage/exports/.gitkeep
 
-# User uploads and attachments
+
 /public/uploads/
 /public/attachments/
 
-# Logs
+
 *.log
 /logs/
 
-# Database backups and exports
+
 *.sql.gz
 *.sql.zip
 *.sql.bz2
@@ -61,17 +61,17 @@ pnpm-debug.log*
 /database/snapshots/
 /database/local/
 
-# Structure-only or local database exports
+
 *.structure.sql
 *.schema.sql
 *.export.sql
 *.local.sql
 
-# IMPORTANT:
-# Keep database/lifeos.sql tracked if it is
-# the official initial database schema.
 
-# Temporary and cache files
+
+
+
+
 *.tmp
 *.temp
 *.cache
@@ -80,45 +80,45 @@ pnpm-debug.log*
 /.phpunit.cache/
 /.phpunit.result.cache
 
-# PHP generated files
+
 .php-version
 .phpunit-watcher.yml
 
-# IDE and editor
+
 .idea/
 *.sublime-workspace
 *.sublime-project
 
-# VS Code local workspace settings
+
 .vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/tasks.json
 
-# Operating system
+
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# Build artifacts
+
 /build/
 /dist/
 
-# Test artifacts and coverage
+
 /coverage/
 
-# Local development launchers
+
 Start-LIFEOS.bat
 run-lifeos.bat
 *.local.bat
 
-# Certificates and private keys
+
 *.pem
 *.key
 *.p12
 *.pfx
 
-# Windows shortcuts
+
 *.lnk
 
 /database

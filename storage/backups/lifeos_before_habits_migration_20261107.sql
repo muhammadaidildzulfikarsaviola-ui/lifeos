@@ -1,8 +1,8 @@
 -- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
---
+
 -- Host: 127.0.0.1    Database: lifeos
--- ------------------------------------------------------
--- Server version	10.4.32-MariaDB
+
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,9 +15,9 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `accounts`
---
+
+
+
 
 DROP TABLE IF EXISTS `accounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -39,9 +39,9 @@ CREATE TABLE `accounts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `accounts`
---
+
+
+
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
@@ -49,9 +49,9 @@ INSERT INTO `accounts` VALUES (1,'BRI','bank','300601003496502',1577000.00,'#006
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `app_settings`
---
+
+
+
 
 DROP TABLE IF EXISTS `app_settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -69,18 +69,18 @@ CREATE TABLE `app_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `app_settings`
---
+
+
+
 
 LOCK TABLES `app_settings` WRITE;
 /*!40000 ALTER TABLE `app_settings` DISABLE KEYS */;
 /*!40000 ALTER TABLE `app_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `budget_items`
---
+
+
+
 
 DROP TABLE IF EXISTS `budget_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -100,18 +100,18 @@ CREATE TABLE `budget_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `budget_items`
---
+
+
+
 
 LOCK TABLES `budget_items` WRITE;
 /*!40000 ALTER TABLE `budget_items` DISABLE KEYS */;
 /*!40000 ALTER TABLE `budget_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `budgets`
---
+
+
+
 
 DROP TABLE IF EXISTS `budgets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -134,18 +134,18 @@ CREATE TABLE `budgets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `budgets`
---
+
+
+
 
 LOCK TABLES `budgets` WRITE;
 /*!40000 ALTER TABLE `budgets` DISABLE KEYS */;
 /*!40000 ALTER TABLE `budgets` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `categories`
---
+
+
+
 
 DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -165,9 +165,9 @@ CREATE TABLE `categories` (
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `categories`
---
+
+
+
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
@@ -175,9 +175,9 @@ INSERT INTO `categories` VALUES (1,'Gaji & Pendapatan','income','↗','#2f6846',
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `fixed_bill_templates`
---
+
+
+
 
 DROP TABLE IF EXISTS `fixed_bill_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -206,9 +206,9 @@ CREATE TABLE `fixed_bill_templates` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `fixed_bill_templates`
---
+
+
+
 
 LOCK TABLES `fixed_bill_templates` WRITE;
 /*!40000 ALTER TABLE `fixed_bill_templates` DISABLE KEYS */;
@@ -216,9 +216,9 @@ INSERT INTO `fixed_bill_templates` VALUES (1,'Bayar Kos',8,1,700000.00,'monthly'
 /*!40000 ALTER TABLE `fixed_bill_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `loan_payments`
---
+
+
+
 
 DROP TABLE IF EXISTS `loan_payments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -247,18 +247,18 @@ CREATE TABLE `loan_payments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `loan_payments`
---
+
+
+
 
 LOCK TABLES `loan_payments` WRITE;
 /*!40000 ALTER TABLE `loan_payments` DISABLE KEYS */;
 /*!40000 ALTER TABLE `loan_payments` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `loans`
---
+
+
+
 
 DROP TABLE IF EXISTS `loans`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -282,18 +282,18 @@ CREATE TABLE `loans` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `loans`
---
+
+
+
 
 LOCK TABLES `loans` WRITE;
 /*!40000 ALTER TABLE `loans` DISABLE KEYS */;
 /*!40000 ALTER TABLE `loans` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `profiles`
---
+
+
+
 
 DROP TABLE IF EXISTS `profiles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -312,9 +312,9 @@ CREATE TABLE `profiles` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `profiles`
---
+
+
+
 
 LOCK TABLES `profiles` WRITE;
 /*!40000 ALTER TABLE `profiles` DISABLE KEYS */;
@@ -322,9 +322,9 @@ INSERT INTO `profiles` VALUES (1,'66151546-d85f-11f1-a70a-088fc37341a0','Persona
 /*!40000 ALTER TABLE `profiles` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `schedule_categories`
---
+
+
+
 
 DROP TABLE IF EXISTS `schedule_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -340,9 +340,9 @@ CREATE TABLE `schedule_categories` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `schedule_categories`
---
+
+
+
 
 LOCK TABLES `schedule_categories` WRITE;
 /*!40000 ALTER TABLE `schedule_categories` DISABLE KEYS */;
@@ -350,9 +350,9 @@ INSERT INTO `schedule_categories` VALUES (1,'Personal','#5a5a5a','2026-11-04 14:
 /*!40000 ALTER TABLE `schedule_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `schedule_events`
---
+
+
+
 
 DROP TABLE IF EXISTS `schedule_events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -389,9 +389,9 @@ CREATE TABLE `schedule_events` (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `schedule_events`
---
+
+
+
 
 LOCK TABLES `schedule_events` WRITE;
 /*!40000 ALTER TABLE `schedule_events` DISABLE KEYS */;
@@ -399,9 +399,9 @@ INSERT INTO `schedule_events` VALUES (2,'Manggung JCM',NULL,'2026-11-07','16:00:
 /*!40000 ALTER TABLE `schedule_events` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `schedule_holiday_sync`
---
+
+
+
 
 DROP TABLE IF EXISTS `schedule_holiday_sync`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -413,9 +413,9 @@ CREATE TABLE `schedule_holiday_sync` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `schedule_holiday_sync`
---
+
+
+
 
 LOCK TABLES `schedule_holiday_sync` WRITE;
 /*!40000 ALTER TABLE `schedule_holiday_sync` DISABLE KEYS */;
@@ -423,9 +423,9 @@ INSERT INTO `schedule_holiday_sync` VALUES (2026,'2026-11-07 14:06:48');
 /*!40000 ALTER TABLE `schedule_holiday_sync` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `schedule_holidays`
---
+
+
+
 
 DROP TABLE IF EXISTS `schedule_holidays`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -444,9 +444,9 @@ CREATE TABLE `schedule_holidays` (
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `schedule_holidays`
---
+
+
+
 
 LOCK TABLES `schedule_holidays` WRITE;
 /*!40000 ALTER TABLE `schedule_holidays` DISABLE KEYS */;
@@ -454,9 +454,9 @@ INSERT INTO `schedule_holidays` VALUES (1,'2026-01-01','Tahun Baru Masehi','nage
 /*!40000 ALTER TABLE `schedule_holidays` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `schedule_shift_occurrences`
---
+
+
+
 
 DROP TABLE IF EXISTS `schedule_shift_occurrences`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -472,18 +472,18 @@ CREATE TABLE `schedule_shift_occurrences` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `schedule_shift_occurrences`
---
+
+
+
 
 LOCK TABLES `schedule_shift_occurrences` WRITE;
 /*!40000 ALTER TABLE `schedule_shift_occurrences` DISABLE KEYS */;
 /*!40000 ALTER TABLE `schedule_shift_occurrences` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `schedule_shift_templates`
---
+
+
+
 
 DROP TABLE IF EXISTS `schedule_shift_templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -502,18 +502,18 @@ CREATE TABLE `schedule_shift_templates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `schedule_shift_templates`
---
+
+
+
 
 LOCK TABLES `schedule_shift_templates` WRITE;
 /*!40000 ALTER TABLE `schedule_shift_templates` DISABLE KEYS */;
 /*!40000 ALTER TABLE `schedule_shift_templates` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `schema_migrations`
---
+
+
+
 
 DROP TABLE IF EXISTS `schema_migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -529,9 +529,9 @@ CREATE TABLE `schema_migrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `schema_migrations`
---
+
+
+
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
@@ -539,9 +539,9 @@ INSERT INTO `schema_migrations` VALUES ('20261107_01_schedule_completion','67503
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `task_categories`
---
+
+
+
 
 DROP TABLE IF EXISTS `task_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -557,9 +557,9 @@ CREATE TABLE `task_categories` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `task_categories`
---
+
+
+
 
 LOCK TABLES `task_categories` WRITE;
 /*!40000 ALTER TABLE `task_categories` DISABLE KEYS */;
@@ -567,9 +567,9 @@ INSERT INTO `task_categories` VALUES (1,'Uncategorized','#777777','2026-11-04 14
 /*!40000 ALTER TABLE `task_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `tasks`
---
+
+
+
 
 DROP TABLE IF EXISTS `tasks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -595,9 +595,9 @@ CREATE TABLE `tasks` (
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `tasks`
---
+
+
+
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
@@ -605,9 +605,9 @@ INSERT INTO `tasks` VALUES (25,'LifeOS','Ngoding','in_progress','high',NULL,NULL
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `transaction_lines`
---
+
+
+
 
 DROP TABLE IF EXISTS `transaction_lines`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -629,9 +629,9 @@ CREATE TABLE `transaction_lines` (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `transaction_lines`
---
+
+
+
 
 LOCK TABLES `transaction_lines` WRITE;
 /*!40000 ALTER TABLE `transaction_lines` DISABLE KEYS */;
@@ -639,9 +639,9 @@ INSERT INTO `transaction_lines` VALUES (1,1,1,'in',150000.00,'2026-11-06','2026-
 /*!40000 ALTER TABLE `transaction_lines` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `transactions`
---
+
+
+
 
 DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -676,9 +676,9 @@ CREATE TABLE `transactions` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `transactions`
---
+
+
+
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
@@ -686,9 +686,9 @@ INSERT INTO `transactions` VALUES (1,'income','posted','Dari Emak',150000.00,'20
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `transfers`
---
+
+
+
 
 DROP TABLE IF EXISTS `transfers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -710,22 +710,22 @@ CREATE TABLE `transfers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `transfers`
---
+
+
+
 
 LOCK TABLES `transfers` WRITE;
 /*!40000 ALTER TABLE `transfers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `transfers` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Dumping events for database 'lifeos'
---
 
---
--- Dumping routines for database 'lifeos'
---
+
+
+
+
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -735,5 +735,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2026-11-07 15:10:43

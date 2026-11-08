@@ -436,7 +436,7 @@ class HabitsService
         ];
     }
 
-    /** Weekdays use Monday as bit zero. A pending scheduled date is ignored only while it is today. */
+
     private function dayStreaks(array $habit, array $completed, DateTimeImmutable $start, DateTimeImmutable $end, DateTimeImmutable $asOf): array
     {
         $scheduled = $this->scheduledDates($habit, $start, $end);
@@ -470,7 +470,7 @@ class HabitsService
         return $dates;
     }
 
-    /** Period targets count unique completed dates in Monday-start weeks or calendar months; unfinished current periods do not break the streak. */
+
     private function periodStreaks(array $habit, array $completed, DateTimeImmutable $start, DateTimeImmutable $asOf): array
     {
         $type = $habit['frequency'] === 'weekly_target' ? 'week' : 'month';
@@ -554,7 +554,7 @@ class HabitsService
         return ['completed_days' => $completed, 'target' => $target, 'percent' => $percent, 'period_start' => $start->format('Y-m-d'), 'period_end' => $end->format('Y-m-d')];
     }
 
-    /** Progress keeps its actual value; only the displayed percentage is capped at 100. */
+
     private function progressPercent(array $habit, ?array $entry): float
     {
         if ($entry === null) return 0.0;

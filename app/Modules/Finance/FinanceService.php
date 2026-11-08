@@ -22,9 +22,9 @@ class FinanceService
         return $this->db;
     }
 
-    /**
-     * Cek apakah tabel finance sudah terpasang di database.
-     */
+
+
+
     public function isInstalled(): bool
     {
         try {
@@ -41,10 +41,10 @@ class FinanceService
     }
 
 
-    /**
-     * Ambil semua akun beserta saldo saat ini yang dihitung dari ledger.
-     * Saldo = Initial Balance + Total Masuk - Total Keluar.
-     */
+
+
+
+
     public function getAccounts(bool $onlyActive = false): array
     {
         $where = $onlyActive ? 'WHERE a.is_active = 1' : '';
@@ -75,9 +75,9 @@ class FinanceService
         return $this->db->query($sql)->fetchAll();
     }
 
-    /**
-     * Ambil satu akun berdasarkan ID dengan saldo saat ini.
-     */
+
+
+
     public function getAccountById(int $id): ?array
     {
         $sql = "
@@ -110,9 +110,9 @@ class FinanceService
         return $account ?: null;
     }
 
-    /**
-     * Simpan akun (tambah baru atau perbarui).
-     */
+
+
+
     public function saveAccount(array $data, ?int $id = null): int
     {
         $name = trim((string) ($data['name'] ?? ''));
@@ -174,10 +174,10 @@ class FinanceService
         return (int) $this->db->lastInsertId();
     }
 
-    /**
-     * Hapus atau arsipkan akun.
-     * Akun yang memiliki riwayat transaksi TIDAK boleh dihapus secara fisik.
-     */
+
+
+
+
     public function deleteAccount(int $id): bool
     {
         $stmt = $this->db->prepare("
@@ -269,9 +269,9 @@ class FinanceService
     }
 
 
-    /**
-     * Ambil daftar transaksi dengan filter, pencarian, dan pagination.
-     */
+
+
+
     public function getTransactions(array $filters = [], int $limit = 50, int $offset = 0): array
     {
         $conditions = ['t.deleted_at IS NULL'];
@@ -421,10 +421,10 @@ class FinanceService
         return $tx ?: null;
     }
 
-    /**
-     * Buat transaksi finansial dan buat ledger movement yang konsisten.
-     * Menggunakan Database Transaction.
-     */
+
+
+
+
     public function createTransaction(array $data): int
     {
         $type = (string) ($data['type'] ?? '');
@@ -494,10 +494,10 @@ class FinanceService
         }
     }
 
-    /**
-     * Update transaksi finansial.
-     * Membersihkan ledger movements lama dan membuat ledger movements baru.
-     */
+
+
+
+
     public function updateTransaction(int $id, array $data): bool
     {
         $existing = $this->getTransactionById($id);
@@ -582,10 +582,10 @@ class FinanceService
         }
     }
 
-    /**
-     * Soft delete transaksi (tidak menghapus fisik agar jejak audit terjaga).
-     * Transaksi soft-deleted secara otomatis dikeluarkan dari perhitungan saldo dan laporan.
-     */
+
+
+
+
     public function softDeleteTransaction(int $id): bool
     {
         $stmt = $this->db->prepare("
@@ -1094,14 +1094,14 @@ class FinanceService
         return (int) $this->db->lastInsertId();
     }
 
-    /**
-     * Catat pembayaran pinjaman.
-     * Aturan bisnis:
-     * - Pokok pinjaman mengurangi kewajiban, bukan expense (is_loan_principal = 1).
-     * - Bunga pinjaman adalah expense (kategori Beban Bunga Pinjaman).
-     * - Setiap pembayaran menghasilkan arus kas keluar pada akun yang konsisten.
-     * - Pembayaran bersifat atomic (DB Transaction).
-     */
+
+
+
+
+
+
+
+
     public function recordLoanPayment(array $data): int
     {
         $loanId = (int) ($data['loan_id'] ?? 0);

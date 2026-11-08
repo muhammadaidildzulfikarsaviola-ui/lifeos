@@ -31,7 +31,7 @@ class ScheduleService
         }
     }
 
-    /** Read-only check so a page visit never mutates the user's schema. */
+
     public function isSchemaReady(): bool
     {
         try {
@@ -200,7 +200,7 @@ class ScheduleService
         return $stmt->fetchAll();
     }
 
-    /** Refresh a year's national holiday list from Nager.Date, a third-party data source. */
+
     public function syncHolidays(int $year, bool $force = false): int
     {
         if ($year < 2020 || $year > 2100) throw new InvalidArgumentException('Tahun hari libur di luar rentang yang didukung.');
